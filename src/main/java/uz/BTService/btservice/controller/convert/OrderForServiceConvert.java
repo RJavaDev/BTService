@@ -5,6 +5,7 @@ import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.controller.dto.response.OrderForServiceResponseDto;
 import uz.BTService.btservice.controller.dto.request.OrderForServiceCreateDto;
 import uz.BTService.btservice.entity.OrderTechnicalForServiceEntity;
+import uz.BTService.btservice.exceptions.UsernameNotFoundException;
 
 import java.util.List;
 
@@ -13,6 +14,21 @@ public class OrderForServiceConvert {
 
     public OrderTechnicalForServiceEntity convertToEntity(OrderForServiceCreateDto orderForServiceCreateDto) {
         OrderTechnicalForServiceEntity orderTechnicalService = new OrderTechnicalForServiceEntity();
+
+        String phoneNumber = orderForServiceCreateDto.getPhoneNumber();
+        if(phoneNumber!=null){
+            orderTechnicalService.setPhoneNumber(phoneNumber);
+            orderTechnicalService.setCustomerFullName(orderTechnicalService.getCustomerFullName());
+        }else{
+            Integer userId = SecurityUtils.getUserId();
+            if(userId!=null){
+                orderTechnicalService.setUserId(userId);
+                orderTechnicalService.forCreate(userId);
+            }else{
+                throw new UsernameNotFoundException("The user needs to register or enter a phone number, but has not entered anything!!!");
+            }
+
+        }
 
         Integer userId = SecurityUtils.getUserId();
 
