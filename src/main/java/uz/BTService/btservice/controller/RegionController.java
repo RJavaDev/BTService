@@ -31,11 +31,11 @@ public class RegionController {
     public HttpResponse<Object> addRegion(@RequestBody RegionDto regionDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-             RegionEntity region= regionService.addRegion(RegionConvert.convertToEntity(regionDto));
+             boolean regionSave= regionService.addObject(RegionConvert.convertToEntity(regionDto));
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(RegionConvert.from(region))
+                    .body(regionSave)
                     .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response
@@ -51,7 +51,7 @@ public class RegionController {
     public HttpResponse<Object> getRegionIdTree(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        RegionEntity region = regionService.getRegionIdTree(id);
+        RegionEntity region = regionService.getObjectByIdTree(id);
         if (region != null) {response
                 .code(HttpResponse.Status.OK)
                 .success(true)
@@ -74,7 +74,7 @@ public class RegionController {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        RegionEntity region = regionService.getRegionId(id);
+        RegionEntity region = regionService.getObjectById(id);
         RegionDto responseRegionDto = RegionConvert.fromNoTree(region);
 
         return response
@@ -89,7 +89,7 @@ public class RegionController {
     @GetMapping("/get/all")
     public HttpResponse<Object> getAllRegion() {
         HttpResponse<Object> response = HttpResponse.build(false);
-        List<RegionEntity> allRegion = regionService.getAllRegion();
+        List<RegionEntity> allRegion = regionService.getAllObject();
         response
                 .code(HttpResponse.Status.OK)
                 .success(true)
@@ -106,7 +106,7 @@ public class RegionController {
     public HttpResponse<Object> getAllTreeRegion() {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<RegionEntity> allRegionTree = regionService.getRegionAllTree();
+        List<RegionEntity> allRegionTree = regionService.getAllObjectTree();
         List<RegionDto> regionTreeList = RegionConvert.fromTree(allRegionTree);
         response
                 .code(HttpResponse.Status.OK)
@@ -125,7 +125,7 @@ public class RegionController {
     public HttpResponse<Object> update(@RequestBody RegionDto regionDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        RegionEntity region = regionService.updateRegion(regionDto.toEntity());
+        RegionEntity region = regionService.updateObject(regionDto.toEntity());
         RegionDto regionDto1 = RegionConvert.fromTree(region);
 
         response.code(HttpResponse.Status.OK)
@@ -143,11 +143,11 @@ public class RegionController {
     public HttpResponse<Object> deleteRegion(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        Boolean isDelete = regionService.delete(id);
+        regionService.delete(id);
 
         return response.code(HttpResponse.Status.OK)
                 .success(true)
-                .body(isDelete)
+                .body(true)
                 .message(HttpResponse.Status.OK.name());
 
     }

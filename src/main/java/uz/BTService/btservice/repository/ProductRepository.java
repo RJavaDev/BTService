@@ -25,9 +25,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     List<ProductEntity> getAllProduct();
 
 
-    @Query(value = "SELECT btsp.* FROM bts_product btsp", nativeQuery = true)
-    List<ProductEntity> getAll();
-
     @Query(value = "SELECT btsp.* FROM bts_product btsp " +
             "INNER JOIN bts_category btsc ON btsp.category_id = :categoryId " +
             "AND btsc.id=btsp.category_id " +
@@ -57,4 +54,12 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             "COALESCE(:startDate, CAST('1970-01-01 00:00:00' AS TIMESTAMP WITHOUT TIME ZONE)) " +
             "AND COALESCE(:endDate, NOW())",nativeQuery = true)
     List<ProductEntity> getDeletedProductByDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query(value = "SELECT btsp.* FROM bts_product btsp " +
+            "INNER JOIN bts_category btsc " +
+            "ON btsp.name = :productName " +
+            "AND btsp.category_id = btsc.id " +
+            "WHERE btsp.status<>'DELETED' " +
+            "AND btsc.status<>'DELETED'", nativeQuery = true)
+    List<ProductEntity> getByProductName(@Param("productName") String productName);
 }

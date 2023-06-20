@@ -22,13 +22,14 @@ import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.exceptions.ProductNotFoundException;
 import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.repository.ProductRepository;
+import uz.BTService.btservice.service.builder.BaseProduct;
 
 import java.text.ParseException;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
+public class ProductService implements BaseProduct<ProductEntity> {
 
 
     private final ProductRepository repository;
@@ -37,11 +38,12 @@ public class ProductService {
 
     public DataGrid<ProductEntity> productPage(HttpServletRequest request, FilterForm filterForm) throws Exception {
         DataGrid<ProductEntity> dataGrid = new DataGrid<>();
-        dataGrid.setRows(getProductAllList());
+        dataGrid.setRows(getAllObject());
         return dataGrid;
     }
 
-    public boolean addProduct(ProductEntity newProduct, Integer categoryId) {
+    @Override
+    public boolean add(ProductEntity crateNewObject, Integer categoryId) {
 
         CategoryEntity categoryIdDb = categoryRepository.findByCategoryId(categoryId).orElseThrow(
                 () -> {
@@ -49,35 +51,36 @@ public class ProductService {
                 }
         );
 
-        newProduct.setCategory(categoryIdDb);
-        newProduct.forCreate(SecurityUtils.getUserId());
+        crateNewObject.setCategory(categoryIdDb);
+        crateNewObject.forCreate(SecurityUtils.getUserId());
 
-        repository.save(newProduct);
+        repository.save(crateNewObject);
 
         return true;
     }
 
-    public ProductEntity getById(Integer id) {
+    @Override
+    public boolean addObject(ProductEntity createObject) {
+        return false;
+    }
 
+    @Override
+    public ProductEntity getObjectById(Integer id) {
         return repository.findByProductId(id).orElseThrow(() -> {
                     throw new ProductNotFoundException(id + " product id not found");
                 }
         );
     }
 
-    public List<ProductEntity> getProductAllList() {
+    @Override
+    public List<ProductEntity> getAllObject() {
         return repository.getAllProduct();
     }
 
-    @Transactional
-    public Boolean delete(Integer id) {
-        Integer integer = repository.productDeleted(id, SecurityUtils.getUserId());
-        return integer > 0;
-    }
-
-    public List<ProductEntity> getByCategoryId(Integer id) {
-        if (id != null) {
-            return repository.getCategoryId(id);
+    @Override
+    public List<ProductEntity> getObjectByCategoryId(Integer categoryId) {
+        if (categoryId != null) {
+            return repository.getCategoryId(categoryId);
         } else {
             throw new CategoryNotFoundException("id is null");
         }
@@ -85,15 +88,6 @@ public class ProductService {
 
     public List<ProductEntity> getProductNameSearch(String productName) {
         return repository.getProductNameListSearch(searchProductNameToArray(productName));
-    }
-
-    private String[] searchProductNameToArray(String productName) {
-        String[] categoryNameList = productName.split(" ");
-
-        for (byte i = 0; i < categoryNameList.length; i++) {
-            categoryNameList[i] = "%" + categoryNameList[i] + "%";
-        }
-        return categoryNameList;
     }
 
     public List<ProductEntity> getDeletedProductsByDate(FilterForm filterForm) {
@@ -123,5 +117,25 @@ public class ProductService {
 
         return repository.getDeletedProductByDate(startDate, endDate);
 
+    }
+
+
+    public List<ProductEntity> getProductName(String productName) {
+        return repository.getByProductName(productName);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        repository.productDeleted(id, SecurityUtils.getUserId());
+    }
+
+    private String[] searchProductNameToArray(String productName) {
+        String[] categoryNameList = productName.split(" ");
+
+        for (byte i = 0; i < categoryNameList.length; i++) {
+            categoryNameList[i] = "%" + categoryNameList[i] + "%";
+        }
+        return categoryNameList;
     }
 }

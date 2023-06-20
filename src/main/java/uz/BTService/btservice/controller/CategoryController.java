@@ -21,6 +21,9 @@ import java.util.List;
 @Tag(name = "Category", description = "This Category CRUD")
 public class CategoryController {
 
+    private final CategoryService service;
+
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for post", description = "This method Category add")
@@ -28,11 +31,11 @@ public class CategoryController {
     public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            CategoryEntity category = categoryService.addCategory(CategoryConvert.convertToEntity(categoryDto));
+            boolean categorySave = service.addObject(CategoryConvert.convertToEntity(categoryDto));
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(CategoryConvert.fromTree(category))
+                    .body(categorySave)
                     .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response
@@ -42,7 +45,6 @@ public class CategoryController {
         return response;
     }
 
-    private final CategoryService categoryService;
 
     @PreAuthorize("permitAll()")
     @Operation(summary = "This method for getId", description = "This method Category getId")
@@ -50,7 +52,7 @@ public class CategoryController {
     public HttpResponse<Object> getCategoryIdTree(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        CategoryEntity category = categoryService.getCategoryIdTree(id);
+        CategoryEntity category = service.getObjectByIdTree(id);
         if (category != null) {response
                 .code(HttpResponse.Status.OK)
                 .success(true)
@@ -73,7 +75,7 @@ public class CategoryController {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        CategoryEntity category = categoryService.getCategoryId(id);
+        CategoryEntity category = service.getObjectById(id);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -88,7 +90,7 @@ public class CategoryController {
     @GetMapping("/get/all")
     public HttpResponse<Object> getAllCategory() {
         HttpResponse<Object> response = HttpResponse.build(false);
-        List<CategoryEntity> allCategory = categoryService.getAllCategory();
+        List<CategoryEntity> allCategory = service.getAllObject();
         List<CategoryDto> categoryNoTreeList = CategoryConvert.fromNoTree(allCategory);
         response
                 .code(HttpResponse.Status.OK)
@@ -106,7 +108,7 @@ public class CategoryController {
     public HttpResponse<Object> getAllTreeCategory() {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<CategoryEntity> allCategoryTree = categoryService.getAllTreeCategory();
+        List<CategoryEntity> allCategoryTree = service.getAllObjectTree();
         List<CategoryDto> categoryTreeList = CategoryConvert.fromTree(allCategoryTree);
         response
                 .code(HttpResponse.Status.OK)
@@ -125,7 +127,7 @@ public class CategoryController {
     public HttpResponse<Object> update(@RequestBody CategoryDto categoryDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        CategoryEntity category = categoryService.updateCategory(categoryDto.toEntity());
+        CategoryEntity category = service.updateObject(categoryDto.toEntity());
         CategoryDto categoryResponseDto = CategoryConvert.fromTree(category);
 
         response.code(HttpResponse.Status.OK)
@@ -143,11 +145,11 @@ public class CategoryController {
     public HttpResponse<Object> deleteCategory(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        Boolean isDelete = categoryService.delete(id);
+        service.delete(id);
 
         return response.code(HttpResponse.Status.OK)
                 .success(true)
-                .body(isDelete)
+                .body(true)
                 .message(HttpResponse.Status.OK.name());
 
     }

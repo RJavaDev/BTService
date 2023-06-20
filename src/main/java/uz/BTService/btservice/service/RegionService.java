@@ -5,11 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.constants.EntityStatus;
-import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.RegionEntity;
-import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.exceptions.RegionNotFoundException;
 import uz.BTService.btservice.repository.RegionRepository;
+import uz.BTService.btservice.service.builder.BaseParentAndChild;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,22 +16,81 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RegionService {
+public class RegionService implements BaseParentAndChild<RegionEntity> {
 
     private final RegionRepository regionRepository;
 
-    public RegionEntity addRegion(RegionEntity regionEntity) {
+    @Override
+    public boolean addObject(RegionEntity regionEntity) {
         Integer userId = SecurityUtils.getUserId();
         Optional<RegionEntity> byCreatedByName = regionRepository.findByCreatedByName(regionEntity.getName());
         if (byCreatedByName.isPresent()) {
-            return regionStatusCheckAndSave(byCreatedByName, regionEntity, userId);
+             regionStatusCheckAndSave(byCreatedByName, regionEntity, userId);
+             return true;
         }
         regionEntity.forCreate(userId);
-        return regionRepository.save(regionEntity);
+        regionRepository.save(regionEntity);
+        return true;
     }
 
+    @Override
+    public RegionEntity getObjectById(Integer id) {
+        if (id == null) return null;
 
-    private RegionEntity regionStatusCheckAndSave(Optional<RegionEntity> byCreatedByName, RegionEntity regionEntity, Integer userId) {
+        return regionRepository.getRegionId(id).orElseThrow(
+                () -> {
+                    throw new RegionNotFoundException(id + "-id not found!!!");
+                }
+        );
+
+    }
+
+    @Override
+    public RegionEntity getObjectByIdTree(Integer id) {
+        if (id == null) return null;
+
+        return regionRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new RegionNotFoundException(id + "-id not found");
+                }
+        );
+    }
+
+    @Override
+    public List<RegionEntity> getAllObject() {
+       return regionRepository.findAllRegion();}
+
+    @Override
+    public List<RegionEntity> getAllObjectTree() {
+        return regionRepository.getRegionAllTree();}
+
+    @Override
+    public RegionEntity firstLevelChildrenOfObject() {
+        return null;
+    }
+
+    @Override
+    public RegionEntity updateObject(RegionEntity newUpdateObject) {
+        RegionEntity entity = childIdAndParentIdVerify(newUpdateObject);
+
+        entity.setParentId(newUpdateObject.getParentId());
+        entity.setName(newUpdateObject.getName());
+        entity.forUpdate(SecurityUtils.getUserId());
+
+        return regionRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        if (id != null) {
+            regionRepository.findByRegionId(id).orElseThrow(
+                    () -> new RegionNotFoundException(id + " id not found!!!"));
+        }
+        regionRepository.regionDelete(id);
+    }
+
+    private void regionStatusCheckAndSave(Optional<RegionEntity> byCreatedByName, RegionEntity regionEntity, Integer userId) {
 
         RegionEntity regionEntity1 = byCreatedByName.get();
         if (regionEntity1.getStatus() == EntityStatus.DELETED) {
@@ -48,49 +106,10 @@ public class RegionService {
 
             regionEntity1.setStatus(EntityStatus.CREATED);
             regionEntity1.forCreate(userId);
-            return regionRepository.save(regionEntity1);
+            regionRepository.save(regionEntity1);
         } else {
             throw new RegionNotFoundException(regionEntity.getName() + " such a region exists!");
         }
-    }
-
-    public RegionEntity getRegionIdTree(Integer regionId) {
-        if (regionId == null) return null;
-
-        return regionRepository.findById(regionId).orElseThrow(
-                () -> {
-                    throw new RegionNotFoundException(regionId + "-id not found");
-                }
-        );
-    }
-
-    public RegionEntity getRegionId(Integer regionId) {
-        if (regionId == null) return null;
-
-        return regionRepository.getRegionId(regionId).orElseThrow(
-                () -> {
-                    throw new RegionNotFoundException(regionId + "-id not found!!!");
-                }
-        );
-    }
-
-    public List<RegionEntity> getAllRegion() {
-        return regionRepository.findAllRegion();
-    }
-
-    public List<RegionEntity> getRegionAllTree() {
-        return regionRepository.getRegionAllTree();
-    }
-
-    public RegionEntity updateRegion(RegionEntity region) {
-
-        RegionEntity entity = childIdAndParentIdVerify(region);
-
-        entity.setParentId(region.getParentId());
-        entity.setName(region.getName());
-        entity.forUpdate(SecurityUtils.getUserId());
-
-        return regionRepository.save(entity);
     }
 
     private RegionEntity childIdAndParentIdVerify(RegionEntity region) {
@@ -125,15 +144,5 @@ public class RegionService {
             throw new RegionNotFoundException("id not found!!!");
         }
         return entity;
-    }
-
-    @Transactional
-    public Boolean delete(Integer id) {
-        if (id != null) {
-            regionRepository.findByRegionId(id).orElseThrow(
-                    () -> new RegionNotFoundException(id + " id not found!!!"));
-        }
-        regionRepository.regionDelete(id);
-        return true;
     }
 }

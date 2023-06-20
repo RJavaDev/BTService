@@ -10,36 +10,40 @@ import uz.BTService.btservice.entity.MessageEntity;
 import uz.BTService.btservice.entity.OrderTechnicalForServiceEntity;
 import uz.BTService.btservice.repository.MassageRepository;
 import uz.BTService.btservice.repository.OrderTechnicalServiceRepository;
+import uz.BTService.btservice.service.builder.BaseOrderServiceBuilder;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderTechnicalService {
+public class OrderTechnicalService implements BaseOrderServiceBuilder<OrderTechnicalForServiceEntity> {
 
     private final OrderTechnicalServiceRepository repository;
     private final MassageRepository massageRepository;
 
-    public boolean addOrder(OrderTechnicalForServiceEntity orderTechnicalService) {
 
+
+    @Override
+    public boolean addObject(OrderTechnicalForServiceEntity createObject) {
         MessageEntity message = new MessageEntity();
 
-        message.setOrderServiceId(orderTechnicalService.getTechnicalServiceId());
+        message.setOrderServiceId(createObject.getTechnicalServiceId());
         message.setText(MassageText.ORDER_SERVICE_CREATE);
 
-        orderTechnicalService.setOrderStatus(OrderStatus.NEW);
-        repository.save(orderTechnicalService);
+        createObject.setOrderStatus(OrderStatus.NEW);
+        repository.save(createObject);
         massageRepository.save(message);
 
         return true;
-
     }
 
-    public OrderTechnicalForServiceEntity getOrderById(Integer id) {
-       return repository.getOrderById(id);
+    @Override
+    public OrderTechnicalForServiceEntity getObjectById(Integer id) {
+        return repository.getOrderById(id);
     }
 
-    public List<OrderTechnicalForServiceEntity> getAllOrderForService(){
+    @Override
+    public List<OrderTechnicalForServiceEntity> getAllObject() {
         return repository.getAllOrderForServiceList();
     }
 
