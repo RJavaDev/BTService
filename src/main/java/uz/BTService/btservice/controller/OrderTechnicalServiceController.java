@@ -29,7 +29,7 @@ public class OrderTechnicalServiceController {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderTechnicalForServiceEntity orderTechnicalService = OrderForServiceConvert.convertToEntity(orderForServiceCreateDto);
-        boolean addOrder = service.addOrder(orderTechnicalService);
+        boolean addOrder = service.addObject(orderTechnicalService);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -44,7 +44,9 @@ public class OrderTechnicalServiceController {
     public HttpResponse<Object> getOrderForService(@PathVariable Integer id) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        OrderForServiceResponseDto orderForServiceResponseDto = OrderForServiceConvert.from(service.getOrderById(id));
+
+        OrderTechnicalForServiceEntity serviceEntity = service.getObjectById(id);
+        OrderForServiceResponseDto orderForServiceResponseDto = OrderForServiceConvert.from(serviceEntity);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -59,7 +61,7 @@ public class OrderTechnicalServiceController {
     public HttpResponse<Object> getOrderForServiceAll() {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        List<OrderTechnicalForServiceEntity> orderTechnicalForServiceEntityList = service.getAllOrderForService();
+        List<OrderTechnicalForServiceEntity> orderTechnicalForServiceEntityList = service.getAllObject();
         List<OrderForServiceResponseDto> orderTechnicalServiceEntities = OrderForServiceConvert.from(orderTechnicalForServiceEntityList);
 
         return response

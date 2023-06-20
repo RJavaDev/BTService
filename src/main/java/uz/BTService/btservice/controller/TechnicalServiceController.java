@@ -46,7 +46,7 @@ public class TechnicalServiceController {
 
         HttpResponse<Object> response = new HttpResponse<>(true);
 
-        TechnicalServiceEntity getById = service.getById(id);
+        TechnicalServiceEntity getById = service.getObjectById(id);
         TechnicalServiceResponseDto serviceResponseDto = TechnicalServiceConvert.from(getById);
 
         return response
@@ -59,7 +59,7 @@ public class TechnicalServiceController {
     public HttpResponse<Object> getCategoryId(@PathVariable Integer categoryId){
         HttpResponse<Object> response = new HttpResponse<>(true);
 
-        List<TechnicalServiceEntity> getById = service.getTechnicalServiceCategoryType(categoryId);
+        List<TechnicalServiceEntity> getById = service.getObjectByCategoryId(categoryId);
         List<TechnicalServiceResponseDto> serviceResponseDto = TechnicalServiceConvert.from(getById);
 
         return response
@@ -75,7 +75,7 @@ public class TechnicalServiceController {
     public HttpResponse<Object> getDeletedById(@PathVariable Integer id){
         HttpResponse<Object> response = new HttpResponse<>(true);
 
-        service.deletedById(id);
+        service.delete(id);
 
         return response
                 .message(HttpStatus.OK.name())

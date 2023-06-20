@@ -34,7 +34,7 @@ public class ProductController extends BaseServerModifierEntity {
     public HttpResponse<Object> getProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        ProductEntity responseProduct = productService.getById(id);
+        ProductEntity responseProduct = productService.getObjectById(id);
         ProductResponseForUserDto responseForUserDto = ProductConvert.from(responseProduct);
 
         return response
@@ -46,23 +46,23 @@ public class ProductController extends BaseServerModifierEntity {
     }
 
 
-
     @Operation(summary = "This method for get", description = "This method get all product")
     @GetMapping("/get/all")
     public HttpResponse<Object> getProductAll() {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> productAllList = productService.getProductAllList();
+        List<ProductEntity> productAllList = productService.getAllObject();
         List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(productAllList);
 
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(responseForUserDtoList)
-                    .message(HttpResponse.Status.OK.name());
+        response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(responseForUserDtoList)
+                .message(HttpResponse.Status.OK.name());
 
-            return response;}
+        return response;
+    }
 
     @Operation(summary = "This method for get", description = "Product get category by id")
     @GetMapping("/get/category/{id}")
@@ -70,19 +70,19 @@ public class ProductController extends BaseServerModifierEntity {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> responseEntityList = productService.getByCategoryId(id);
+        List<ProductEntity> responseEntityList = productService.getObjectByCategoryId(id);
         List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(responseEntityList);
 
         return response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(responseForUserDtoList)
-                    .message(HttpResponse.Status.OK.name());}
-
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(responseForUserDtoList)
+                .message(HttpResponse.Status.OK.name());
+    }
 
 
     @Operation(summary = "This method for Get", description = "This method Product Search product name")
-    @GetMapping("/get/name/{productName}")
+    @GetMapping("/get/search-product/name/{productName}")
     public HttpResponse<Object> getProductNameSearch(@PathVariable String productName) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
@@ -90,9 +90,27 @@ public class ProductController extends BaseServerModifierEntity {
         List<ProductResponseForUserDto> responseProductList = ProductConvert.from(responseEntityList);
 
         return response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(responseProductList)
-                    .message(HttpResponse.Status.OK.name());
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(responseProductList)
+                .message(HttpResponse.Status.OK.name());
 
-    }}
+    }
+
+
+    @Operation(summary = "This method for Get", description = "This method Product name")
+    @GetMapping("/get/name/{productName}")
+    public HttpResponse<Object> getProductName(@PathVariable String productName) {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<ProductEntity> responseEntityList = productService.getProductName(productName);
+        List<ProductResponseForUserDto> responseProductList = ProductConvert.from(responseEntityList);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(responseProductList)
+                .message(HttpResponse.Status.OK.name());
+
+    }
+}

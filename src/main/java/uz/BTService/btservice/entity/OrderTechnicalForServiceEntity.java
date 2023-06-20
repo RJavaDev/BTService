@@ -7,15 +7,16 @@ import lombok.Setter;
 import uz.BTService.btservice.constants.OrderStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.response.OrderForServiceResponseDto;
+import uz.BTService.btservice.entity.base.BaseOrderEntity;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 @Getter
 @Setter
 @Entity
 @Table(name = TableNames.ORDER_TECHNICAL_SERVICE)
-public class OrderTechnicalForServiceEntity extends BaseServerModifierEntity {
+public class OrderTechnicalForServiceEntity extends BaseOrderEntity {
 
-    @Column(name = "technical_service_id")
+    @Column(name = "technical_service_id", nullable = false)
     private Integer technicalServiceId;
 
     @ManyToOne
@@ -26,18 +27,12 @@ public class OrderTechnicalForServiceEntity extends BaseServerModifierEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private Integer userId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;
-
-    @Column(nullable = false)
-    private double latitude;
-
-    @Column(nullable = false)
-    private double longitude;
 
     public OrderForServiceResponseDto toDto(String... ignoreProperties){
         return toDto(this, new OrderForServiceResponseDto(), ignoreProperties);

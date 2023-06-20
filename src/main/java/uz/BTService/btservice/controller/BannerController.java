@@ -38,7 +38,7 @@ public class BannerController {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         BannerEntity bannerEntity = BannerConvert.convertToEntity(bannerCreateRequestDto);
-        boolean save = bannerService.saveBanner(bannerEntity);
+        boolean save = bannerService.addObject(bannerEntity);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -53,7 +53,7 @@ public class BannerController {
     public HttpResponse<Object> getBannerAll() {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<BannerEntity> banner = bannerService.getByAll();
+        List<BannerEntity> banner = bannerService.getAllObject();
         List<BannerResponseDto> bannerResponseDtoList = BannerConvert.from(banner);
         return response
                 .code(HttpResponse.Status.OK)
@@ -68,7 +68,7 @@ public class BannerController {
     public HttpResponse<Object> getBannerId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        BannerEntity banner = bannerService.getById(id);
+        BannerEntity banner = bannerService.getObjectById(id);
         BannerResponseDto bannerResponseDto = BannerConvert.from(banner);
 
         return response

@@ -8,18 +8,20 @@ import uz.BTService.btservice.entity.TechnicalServiceEntity;
 import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.repository.TechnicalServiceRepository;
+import uz.BTService.btservice.service.builder.BaseProduct;
 
 import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
-public class TechnicalService {
+public class TechnicalService implements BaseProduct<TechnicalServiceEntity> {
 
     private final TechnicalServiceRepository repository;
 
     private final CategoryRepository categoryRepository;
 
+    @Override
     public boolean add(TechnicalServiceEntity entity, Integer categoryId){
         categoryRepository.findByCategoryId(categoryId).orElseThrow(()->{
             throw new CategoryNotFoundException(categoryId+"-id category not found");
@@ -29,16 +31,29 @@ public class TechnicalService {
         return true;
     }
 
-    public TechnicalServiceEntity getById(Integer id) {
+    @Override
+    public boolean addObject(TechnicalServiceEntity createObject) {
+        return false;
+    }
+
+    @Override
+    public TechnicalServiceEntity getObjectById(Integer id) {
         return repository.getByTechnicalId(id);
     }
 
-    public List<TechnicalServiceEntity> getTechnicalServiceCategoryType(Integer categoryId){
-        return repository.getTechnicalServiceCategoryType(categoryId);
+    @Override
+    public List<TechnicalServiceEntity> getAllObject() {
+        return repository.findAll();
     }
 
+    @Override
+    public List<TechnicalServiceEntity> getObjectByCategoryId(Integer categoryId) {
+        return  repository.getTechnicalServiceCategoryType(categoryId);
+    }
+
+    @Override
     @Transactional
-    public void deletedById(Integer id) {
+    public void delete(Integer id) {
         repository.technicalServiceDelete(id);
     }
 }

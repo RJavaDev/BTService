@@ -34,7 +34,7 @@ public class ProductControllerForAdmin {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         ProductEntity product = ProductConvert.convertToEntity(productDto);
-        boolean isSave = productService.addProduct(product,productDto.getCategoryId());
+        boolean isSave = productService.add(product,productDto.getCategoryId());
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -52,7 +52,7 @@ public class ProductControllerForAdmin {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        ProductEntity responseProduct = productService.getById(id);
+        ProductEntity responseProduct = productService.getObjectById(id);
         ProductResponseForAdminDto responseForAdminDto = ProductConvert.fromForAdmin(responseProduct);
 
         return response
@@ -69,7 +69,7 @@ public class ProductControllerForAdmin {
     @GetMapping("/for-admin/get/all")
     public HttpResponse<Object> getProductAllForAdmin() {HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> productAllList = productService.getProductAllList();
+        List<ProductEntity> productAllList = productService.getAllObject();
         List<ProductResponseForAdminDto> productResponseForAdminDtoList = ProductConvert.fromForAdmin(productAllList);
 
         return response
@@ -88,7 +88,7 @@ public class ProductControllerForAdmin {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> responseEntityList = productService.getByCategoryId(id);
+        List<ProductEntity> responseEntityList = productService.getObjectByCategoryId(id);
         List<ProductResponseForAdminDto> productResponseForAdminDtoList = ProductConvert.fromForAdmin(responseEntityList);
 
         return response
@@ -124,11 +124,14 @@ public class ProductControllerForAdmin {
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
+
+        productService.delete(id);
+
         try {
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(productService.delete(id))
+                    .body(true)
                     .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response

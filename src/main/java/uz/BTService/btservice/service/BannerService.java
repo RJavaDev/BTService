@@ -1,13 +1,10 @@
 package uz.BTService.btservice.service;
 
-
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.BTService.btservice.entity.BannerEntity;
-import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
-import uz.BTService.btservice.repository.AttachRepository;
 import uz.BTService.btservice.repository.BannerRepository;
+import uz.BTService.btservice.service.builder.BaseServiceBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,29 +12,33 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 
-public class BannerService {
+public class BannerService implements BaseServiceBuilder<BannerEntity> {
 
     private final BannerRepository bannerRepository;
     private final AttachService attachService;
-    public boolean saveBanner(BannerEntity bannerEntity) {
-        Optional<BannerEntity> bannerEntityDB = bannerRepository.findByPosition(bannerEntity.getPosition());
+
+
+    @Override
+    public boolean addObject(BannerEntity createObject) {
+        Optional<BannerEntity> bannerEntityDB = bannerRepository.findByPosition(createObject.getPosition());
         if (bannerEntityDB.isPresent()) {
             BannerEntity banner = bannerEntityDB.get();
             attachService.deleteById(banner.getAttachId());
             bannerRepository.delete(banner);
-            bannerRepository.save(bannerEntity);
+            bannerRepository.save(createObject);
             return true;
         }
-        bannerRepository.save(bannerEntity);
+        bannerRepository.save(createObject);
         return true;
     }
 
-
-    public BannerEntity getById(Integer id) {
+    @Override
+    public BannerEntity getObjectById(Integer id) {
         return bannerRepository.getBannerId(id);
     }
 
-    public List<BannerEntity> getByAll() {
+    @Override
+    public List<BannerEntity> getAllObject() {
         return bannerRepository.getAllBannerEntity();
     }
 }

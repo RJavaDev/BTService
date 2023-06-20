@@ -30,7 +30,7 @@ public class OrderForProductController {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderForProductEntity orderForProduct = OrderForProductConvert.convertToEntity(orderForProductCreateDto);
-        boolean addOrder = service.addOrder(orderForProduct);
+        boolean addOrder = service.addObject(orderForProduct);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -46,7 +46,7 @@ public class OrderForProductController {
 
         HttpResponse<Object> response = HttpResponse.build(true);
 
-        OrderForProductEntity orderForProduct = service.getOrderById(id);
+        OrderForProductEntity orderForProduct = service.getObjectById(id);
         OrderForProductResponseDto orderForProductResponseDto = OrderForProductConvert.from(orderForProduct);
 
         return response
@@ -62,7 +62,7 @@ public class OrderForProductController {
     public HttpResponse<Object> getOrderForServiceAll() {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        List<OrderForProductEntity> orderForProductEntityList = service.getAllOrderForService();
+        List<OrderForProductEntity> orderForProductEntityList = service.getAllObject();
         List<OrderForProductResponseDto> orderForProductResponseDtoList = OrderForProductConvert.from(orderForProductEntityList);
 
         return response
