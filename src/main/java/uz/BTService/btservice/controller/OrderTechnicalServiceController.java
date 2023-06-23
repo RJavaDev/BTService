@@ -22,8 +22,7 @@ public class OrderTechnicalServiceController {
 
     private final OrderTechnicalService service;
 
-
-    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "This method add order technical service", description = "This method add")
     @PostMapping("/add")
     public HttpResponse<Object> addOrderForService(@RequestBody OrderForServiceCreateDto orderForServiceCreateDto) {
 

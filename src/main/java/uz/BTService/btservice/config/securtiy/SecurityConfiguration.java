@@ -32,7 +32,9 @@ public class SecurityConfiguration {
             "/api/v1/banner/get/**",
             "/attach/**",
             "/api/v1/region/get/**",
-            "/images/**"
+            "/images/**",
+            "/api/v1/order-for-product/add",
+            "/api/v1/order-for-service"
     };
 
     @Bean

@@ -21,10 +21,8 @@ import java.util.List;
 public class OrderForProductController {
 
 
-    private final OrderForProductService service;
-
-    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("permitAll()")
+    @Operation(summary = "This method add order product", description = "This method add")
     @PostMapping("/add")
     public HttpResponse<Object> addOrderForService(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
 
@@ -37,6 +35,8 @@ public class OrderForProductController {
                 .body(addOrder)
                 .message(HttpResponse.Status.OK.name());
     }
+
+    private final OrderForProductService service;
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
