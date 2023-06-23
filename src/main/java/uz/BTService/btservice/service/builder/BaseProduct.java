@@ -2,10 +2,10 @@ package uz.BTService.btservice.service.builder;
 
 import java.util.List;
 
-public interface BaseProduct<R> extends BaseServiceBuilder<R>{
+public abstract class BaseProduct<R> implements BaseServiceBuilder<R> {
 
-    boolean add(R crateNewObject, Integer categoryId);
+    public abstract boolean add(R crateNewObject, Integer categoryId);
 
-    List<R> getObjectByCategoryId(Integer categoryId);
+    public abstract List<R> getObjectByCategoryId(Integer categoryId);
 
 }

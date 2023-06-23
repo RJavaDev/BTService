@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderForProductService implements BaseOrderServiceBuilder<OrderForProductEntity> {
+public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProductEntity> {
 
     private final OrderForProductRepository repository;
 

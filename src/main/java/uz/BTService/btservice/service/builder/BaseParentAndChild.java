@@ -2,16 +2,16 @@ package uz.BTService.btservice.service.builder;
 
 import java.util.List;
 
-public interface BaseParentAndChild<R> extends BaseServiceBuilder<R>{
+public abstract class BaseParentAndChild<R> implements BaseServiceBuilder<R> {
 
 
 
-    R getObjectByIdTree(Integer id);
+    public abstract R getObjectByIdTree(Integer id);
 
-    List<R> getAllObjectTree();
+    public abstract List<R> getAllObjectTree();
 
-    R firstLevelChildrenOfObject();
+    public abstract R firstLevelChildrenOfObject();
 
-    R updateObject(R newUpdateObject);
+    public abstract R updateObject(R newUpdateObject);
 
 }

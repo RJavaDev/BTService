@@ -29,7 +29,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService implements BaseProduct<ProductEntity> {
+public class ProductService extends BaseProduct<ProductEntity> {
 
 
     private final ProductRepository repository;

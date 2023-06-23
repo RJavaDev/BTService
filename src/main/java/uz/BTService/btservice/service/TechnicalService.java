@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TechnicalService implements BaseProduct<TechnicalServiceEntity> {
+public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
 
     private final TechnicalServiceRepository repository;
 

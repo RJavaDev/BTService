@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService implements BaseParentAndChild<CategoryEntity> {
+public class CategoryService extends BaseParentAndChild<CategoryEntity> {
     private final CategoryRepository categoryRepository;
     @Override
     public boolean addObject(CategoryEntity category) {

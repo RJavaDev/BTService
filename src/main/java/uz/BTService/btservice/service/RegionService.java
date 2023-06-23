@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RegionService implements BaseParentAndChild<RegionEntity> {
+public class RegionService extends BaseParentAndChild<RegionEntity> {
 
     private final RegionRepository regionRepository;
 

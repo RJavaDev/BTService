@@ -2,7 +2,7 @@ package uz.BTService.btservice.service.builder;
 
 import uz.BTService.btservice.constants.OrderStatus;
 
-public interface BaseOrderServiceBuilder<R> extends BaseServiceBuilder<R>{
+public abstract class BaseOrderServiceBuilder<R> implements BaseServiceBuilder<R> {
 
-    boolean updateOrderStatus (OrderStatus status, Integer orderId);
+    public abstract boolean updateOrderStatus(OrderStatus status, Integer orderId);
 }

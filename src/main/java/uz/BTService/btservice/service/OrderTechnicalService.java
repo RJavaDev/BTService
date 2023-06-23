@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderTechnicalService implements BaseOrderServiceBuilder<OrderTechnicalForServiceEntity> {
+public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnicalForServiceEntity> {
 
     private final OrderTechnicalServiceRepository repository;
     private final MassageRepository massageRepository;
