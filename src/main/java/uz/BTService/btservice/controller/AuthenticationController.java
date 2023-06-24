@@ -25,7 +25,10 @@ public class AuthenticationController {
 
     @Operation(summary = "This method for post", description = "This method user register")
     @PostMapping("/register")
-    public HttpResponse<Object> register(@RequestBody UserCreateRequestDto userDto) {
+    public HttpResponse<Object> register(
+            @RequestBody UserCreateRequestDto userDto
+
+    ) {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
