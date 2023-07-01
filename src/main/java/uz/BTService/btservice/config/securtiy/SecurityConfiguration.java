@@ -1,5 +1,6 @@
 package uz.BTService.btservice.config.securtiy;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,14 +41,17 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
+                .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(WHITE_LIST)
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
+                .exceptionHandling()
+                            .authenticationEntryPoint(
+                                     (request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage())
+                ).and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

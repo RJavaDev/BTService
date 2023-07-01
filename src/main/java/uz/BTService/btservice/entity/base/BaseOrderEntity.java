@@ -1,11 +1,13 @@
 package uz.BTService.btservice.entity.base;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@MappedSuperclass
 public class BaseOrderEntity extends BaseServerModifierEntity {
 
     private String phoneNumber;

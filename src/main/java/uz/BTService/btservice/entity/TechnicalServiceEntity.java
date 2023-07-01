@@ -11,9 +11,6 @@ import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = TableNames.TECHNICAL_SERVICE)
 public class TechnicalServiceEntity extends BaseServerModifierEntity {

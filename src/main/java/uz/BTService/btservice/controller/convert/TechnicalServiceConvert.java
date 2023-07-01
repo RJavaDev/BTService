@@ -12,12 +12,10 @@ import java.util.List;
 public class TechnicalServiceConvert {
 
     public TechnicalServiceEntity convertToEntity(TechnicalServiceCreate technicalServiceCreate){
-
-        return TechnicalServiceEntity
-                .builder()
-                .attachId(technicalServiceCreate.getAttachId())
-                .description(technicalServiceCreate.getDescription())
-                .build();
+        TechnicalServiceEntity technicalServiceEntity = new TechnicalServiceEntity();
+        technicalServiceEntity.setAttachId(technicalServiceCreate.getAttachId());
+        technicalServiceEntity.setDescription(technicalServiceCreate.getDescription());
+        return technicalServiceEntity;
     }
 
     public TechnicalServiceResponseDto from(TechnicalServiceEntity technicalServiceEntity){

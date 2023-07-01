@@ -19,9 +19,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = TableNames.DEPARTMENT_USER)
 public class UserEntity extends BaseServerModifierEntity implements UserDetails {

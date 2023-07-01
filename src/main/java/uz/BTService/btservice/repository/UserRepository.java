@@ -53,17 +53,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "WHERE btsu.status<>'DELETED'", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
-    @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND bts_user.role_enum_list <> 'SUPER_ADMIN'", nativeQuery = true)
+    @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
     UserEntity getUserInformation(@Param("userInformationId") Integer id);
 
     @Modifying
-    @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId AND status <> 'DELETED' AND bts_user.role_enum_list <> 'SUPER_ADMIN'", nativeQuery = true)
+    @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
     Integer userDelete(@Param("userId") Integer userId);
 
 
-    @Query(value = "SELECT * FROM bts_user WHERE role_enum_list = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
+    @Query(value = "SELECT * FROM bts_user WHERE 'ADMIN' = ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
     List<UserEntity> getAllAdmin();
 
-    @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND role_enum_list = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
+    @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND 'ADMIN' = ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
     UserEntity getAdminById(@Param("adminId") Integer adminId);
 }
