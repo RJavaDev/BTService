@@ -19,7 +19,7 @@ public class AttachConvert {
 
     private static final String ATTACH_UPLOAD_FOLDER = "src/main/resources/images/";
 
-    private static final String ATTACH_PATH = "https://btservice.uz/images/";
+    private static final String ATTACH_PATH = "https://api.btservice.uz/images/";
 
     public List<AttachResponseDto> from(List<AttachEntity> categoryList) {
         return categoryList.stream().map(AttachConvert::from).toList();
