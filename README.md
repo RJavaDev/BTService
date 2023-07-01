@@ -26,7 +26,7 @@ To deploy the project, follow these steps:
 
 4. Launch the Application: Execute the generated application executable or deploy the project to a web server.
 
-5. Access the Application: Open your web browser and visit the BTService application at [http://btservice.uz](http://btservice.uz).
+5. Access the Application: Open your web browser and visit the BTService application at [https://btservice.uz](https://btservice.uz).
 
 ## Documentation
 
