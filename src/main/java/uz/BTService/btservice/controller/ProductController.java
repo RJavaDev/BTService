@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.ProductConvert;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
-import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForUserDto;
 import uz.BTService.btservice.entity.ProductEntity;
-import uz.BTService.btservice.repository.AttachRepository;
 import uz.BTService.btservice.service.ProductService;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.List;
 public class ProductController{
 
     private final ProductService service;
-    private final AttachRepository attachRepository;
 
 
     @Operation(summary = "Get Product by ID", description = "This method retrieves product information based on the provided ID.")
@@ -108,15 +105,5 @@ public class ProductController{
                 .body(responseProductList)
                 .message(HttpResponse.Status.OK.name());
 
-    }
-
-    @PostMapping ("/get/attachList")
-    public HttpResponse<Object> geta(@RequestBody ProductCreateRequestDto productCreateRequestDto){
-        HttpResponse<Object> response = HttpResponse.build(false);
-        return response
-                .code(HttpResponse.Status.OK)
-                .success(true)
-                .body(attachRepository.getAttachListByIds(productCreateRequestDto.getAttachId()))
-                .message(HttpResponse.Status.OK.name());
     }
 }
