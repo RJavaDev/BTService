@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
 
-    @Operation(summary = "This method for post", description = "This method user register")
+    @Operation(summary = "User Registration", description = "This method is used for user registration")
     @PostMapping("/register")
     public HttpResponse<Object> register(
             @RequestBody UserCreateRequestDto userDto
@@ -43,7 +43,7 @@ public class AuthenticationController {
         return response;
     }
 
-    @Operation(summary = "This method for post", description = "This method user login")
+    @Operation(summary = "User Login", description = "This method is used for user authentication and login")
     @PostMapping("/login")
     public HttpResponse<Object> authenticate(@RequestBody LoginRequestDto request) {
         HttpResponse<Object> response = HttpResponse.build(true);

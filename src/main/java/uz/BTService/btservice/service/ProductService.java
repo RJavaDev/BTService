@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.common.util.SecurityUtils;
+import uz.BTService.btservice.controller.dto.request.ProductUpdateRequestDto;
 import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.DataGrid;
@@ -20,9 +21,11 @@ import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.ProductEntity;
 import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.exceptions.ProductNotFoundException;
+import uz.BTService.btservice.repository.AttachRepository;
 import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.repository.ProductRepository;
 import uz.BTService.btservice.service.builder.BaseProduct;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.text.ParseException;
 import java.util.*;
@@ -36,6 +39,9 @@ public class ProductService extends BaseProduct<ProductEntity> {
 
     private final CategoryRepository categoryRepository;
 
+    private final AttachRepository attachRepository;
+    private final CommonSchemaValidator commonSchemaValidator;
+
     public DataGrid<ProductEntity> productPage(HttpServletRequest request, FilterForm filterForm) throws Exception {
         DataGrid<ProductEntity> dataGrid = new DataGrid<>();
         dataGrid.setRows(getAllObject());
@@ -43,14 +49,13 @@ public class ProductService extends BaseProduct<ProductEntity> {
     }
 
     @Override
-    public boolean add(ProductEntity crateNewObject, Integer categoryId) {
+    public boolean add(ProductEntity crateNewObject, Integer categoryId, List<String> attachIdList) {
 
-        CategoryEntity categoryIdDb = categoryRepository.findByCategoryId(categoryId).orElseThrow(
-                () -> {
-                    throw new CategoryNotFoundException(categoryId + "-id category not found!!!");
-                }
-        );
+        CategoryEntity categoryIdDb = commonSchemaValidator.validateCategory(categoryId);
 
+        List<AttachEntity> attachList = commonSchemaValidator.validateAttachId(attachIdList);
+
+        crateNewObject.setAttach(attachList);
         crateNewObject.setCategory(categoryIdDb);
         crateNewObject.forCreate(SecurityUtils.getUserId());
 
@@ -66,10 +71,7 @@ public class ProductService extends BaseProduct<ProductEntity> {
 
     @Override
     public ProductEntity getObjectById(Integer id) {
-        return repository.findByProductId(id).orElseThrow(() -> {
-                    throw new ProductNotFoundException(id + " product id not found");
-                }
-        );
+        return commonSchemaValidator.validateProductId(id);
     }
 
     @Override
@@ -124,6 +126,27 @@ public class ProductService extends BaseProduct<ProductEntity> {
         return repository.getByProductName(productName);
     }
 
+
+    @Transactional
+    public boolean update(ProductUpdateRequestDto updateNewObject, Integer objectId) {
+
+        ProductEntity productDB = commonSchemaValidator.validateProduct(
+                objectId,
+                updateNewObject.getCategoryId(),
+                updateNewObject.getAttachId(),
+                updateNewObject.getName(),
+                updateNewObject.getColor(),
+                updateNewObject.getPrice(),
+                updateNewObject.getDescription()
+        );
+
+        productDB.forUpdate(SecurityUtils.getUserId());
+
+        repository.save(productDB);
+
+        return true;
+    }
+
     @Override
     @Transactional
     public void delete(Integer id) {
@@ -138,4 +161,5 @@ public class ProductService extends BaseProduct<ProductEntity> {
         }
         return categoryNameList;
     }
+
 }

@@ -29,7 +29,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
     void categoryDelete(@Param("categoryId") Integer categoryId);
 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.name=:categoryName",nativeQuery = true)
-    Optional<CategoryEntity> findByCreatedByName(@Param("categoryName")String categoryName);
+    CategoryEntity findByCategoryName(@Param("categoryName")String categoryName);
 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE (btsc.id=:parentId OR btsc.id=:childId) AND btsc.status <> 'DELETED'", nativeQuery = true)
     List<CategoryEntity> getCategoryIdParentAndChild(@Param("parentId") Integer parentId, @Param("childId") Integer childId);

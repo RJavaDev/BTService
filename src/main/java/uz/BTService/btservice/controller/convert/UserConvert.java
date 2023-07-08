@@ -83,7 +83,7 @@ public class UserConvert {
 
         try {
             user.setBirtDate(DateUtils.parseDate(birtDate, DateUtil.PATTERN3));
-            user.setImageId(attachId);
+            user.setAttachId(attachId);
             user.setRoleEnumList(setRoleEnum(role));
 
         } catch (ParseException e) {

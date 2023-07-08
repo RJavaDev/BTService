@@ -12,7 +12,7 @@ public interface BannerRepository extends JpaRepository<BannerEntity, Integer> {
     @Query(value = "SELECT btsb.* FROM bts_banner btsb WHERE btsb.position=:position", nativeQuery = true)
     Optional<BannerEntity> findByPosition(@Param("position") Integer position);
 
-    @Query(value = "SELECT btsb.* FROM bts_banner btsb ", nativeQuery = true)
+    @Query(value = "SELECT btsb.* FROM bts_banner btsb ORDER BY btsb.position", nativeQuery = true)
     List<BannerEntity> getAllBannerEntity();
 
     @Query(value = "SELECT btsb.* FROM bts_banner btsb WHERE btsb.id=:id", nativeQuery = true)

@@ -12,41 +12,45 @@ import uz.BTService.btservice.service.builder.BaseParentAndChild;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService extends BaseParentAndChild<CategoryEntity> {
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository repository;
+
     @Override
     public boolean addObject(CategoryEntity category) {
         Integer userId = SecurityUtils.getUserId();
 
-        Optional<CategoryEntity> byCreatedByName = categoryRepository.findByCreatedByName(category.getName());
+        CategoryEntity byCreatedByName = repository.findByCategoryName(category.getName());
 
-        if (byCreatedByName.isPresent()) {
+        if (byCreatedByName != null) {
             categoryStatusCheckAndSave(byCreatedByName, category, userId);
             return true;
         }
 
         category.forCreate(userId);
 
-         categoryRepository.save(category);
+        repository.save(category);
         return true;
     }
+
     @Override
     public CategoryEntity getObjectById(Integer id) {
         if (id == null) return null;
 
-        return categoryRepository.findById(id).orElseThrow(
-                () -> {throw new CategoryNotFoundException(id + "-id not found!!!");}
+        return repository.findByCategoryId(id).orElseThrow(
+                () -> {
+                    throw new CategoryNotFoundException(id + "-id not found!!!");
+                }
         );
     }
+
     @Override
     public CategoryEntity getObjectByIdTree(Integer id) {
         if (id == null) return null;
-        return categoryRepository.findById(id).orElseThrow(
+        return repository.findById(id).orElseThrow(
                 () -> {
                     throw new CategoryNotFoundException(id + "-id not found");
                 }
@@ -55,11 +59,12 @@ public class CategoryService extends BaseParentAndChild<CategoryEntity> {
 
     @Override
     public List<CategoryEntity> getAllObject() {
-        return categoryRepository.findAllCategory();
+        return repository.findAllCategory();
     }
+
     @Override
     public List<CategoryEntity> getAllObjectTree() {
-        return categoryRepository.getCategoryTree();
+        return repository.getCategoryTree();
     }
 
     @Override
@@ -68,76 +73,91 @@ public class CategoryService extends BaseParentAndChild<CategoryEntity> {
     }
 
     @Override
-    public CategoryEntity updateObject(CategoryEntity newUpdateObject) {
-        CategoryEntity entity = childIdAndParentIdVerify(newUpdateObject);
-
+    public boolean updateObject(CategoryEntity newUpdateObject, Integer categoryId) {
+        CategoryEntity entity = childIdAndParentIdVerify(newUpdateObject, categoryId);
         entity.setParentId(newUpdateObject.getParentId());
-        entity.setName(newUpdateObject.getName());
-        entity.forUpdate(SecurityUtils.getUserId());
 
-        return categoryRepository.save(entity);
+        String updateObjectName = newUpdateObject.getName();
+        if (!updateObjectName.isEmpty()) {
+            deletedObjectOriginDataBase(updateObjectName);
+            entity.setName(updateObjectName);
+        }
+
+        entity.forUpdate(SecurityUtils.getUserId());
+        repository.save(entity);
+        return true;
     }
+
     @Transactional
     public void delete(Integer id) {
         if (id != null) {
-            categoryRepository.findByCategoryId(id).orElseThrow(
+            repository.findByCategoryId(id).orElseThrow(
                     () -> new CategoryNotFoundException(id + " id not found!!!"));
         }
-        categoryRepository.categoryDelete(id);
+        repository.categoryDelete(id);
     }
 
-    private void categoryStatusCheckAndSave(Optional<CategoryEntity> byCreatedByName, CategoryEntity categoryentity, Integer userId) {
+    private void categoryStatusCheckAndSave(CategoryEntity byCreatedByName, CategoryEntity categoryentity, Integer userId) {
 
-        CategoryEntity categoryEntity = byCreatedByName.get();
-        if (categoryEntity.getStatus() == EntityStatus.DELETED) {
+        if (byCreatedByName.getStatus() == EntityStatus.DELETED) {
 
-            categoryEntity.setName(categoryentity.getName());
-
-            if (categoryentity.getParentId() != null) {
-                categoryRepository.findByCategoryId(categoryEntity.getParentId()).orElseThrow(() -> {
-                    throw new CategoryNotFoundException(categoryentity.getParentId() + " parent id not found!");
+            byCreatedByName.setName(categoryentity.getName());
+            Integer parentIdDTO = categoryentity.getParentId();
+            if (parentIdDTO != null) {
+                repository.findByCategoryId(parentIdDTO).orElseThrow(() -> {
+                    throw new CategoryNotFoundException(parentIdDTO + " parent id not found!");
                 });
-                categoryEntity.setParentId(categoryentity.getParentId());
+                byCreatedByName.setParentId(categoryentity.getParentId());
             }
 
-            categoryEntity.setStatus(EntityStatus.CREATED);
-            categoryEntity.forCreate(userId);
-            categoryRepository.save(categoryEntity);
+            byCreatedByName.setStatus(EntityStatus.CREATED);
+            byCreatedByName.forCreate(userId);
+            repository.save(byCreatedByName);
         } else {
             throw new CategoryNotFoundException(categoryentity.getName() + " such a category exists!");
         }
     }
 
-    private CategoryEntity childIdAndParentIdVerify(CategoryEntity category) {
+    private CategoryEntity childIdAndParentIdVerify(CategoryEntity category, Integer categoryId) {
 
         CategoryEntity entity = null;
         if (category.getParentId() != null) {
 
-            entity = parentIdVerify(category);
+            entity = parentIdVerify(category, categoryId);
 
         } else {
-            entity = categoryRepository.findByCategoryId(category.getId()).orElseThrow(
-                    () -> new CategoryNotFoundException(category.getId() + " id not found!!!"));
+            entity = repository.findByCategoryId(categoryId).orElseThrow(
+                    () -> new CategoryNotFoundException(categoryId + " id not found!!!"));
         }
         return entity;
     }
 
-    private CategoryEntity parentIdVerify(CategoryEntity category) {
+    private CategoryEntity parentIdVerify(CategoryEntity category, Integer categoryId) {
 
         CategoryEntity entity = null;
-        List<CategoryEntity> parentAndChild = categoryRepository.getCategoryIdParentAndChild(category.getId(), category.getParentId());
+        List<CategoryEntity> parentAndChild = repository.getCategoryIdParentAndChild(categoryId, category.getParentId());
 
-        if(parentAndChild.size()==2){
+        if (parentAndChild.size() == 2) {
             for (CategoryEntity categoryDB : parentAndChild) {
 
-                if (Objects.equals(categoryDB.getId(), category.getId())) {
+                if (Objects.equals(categoryDB.getId(), categoryId)) {
                     entity = categoryDB;
-
                 }
+
             }
 
         } else {
             throw new CategoryNotFoundException("id not found!!!");
         }
         return entity;
-    }}
+    }
+
+    private void deletedObjectOriginDataBase(String updateObjectName) {
+        CategoryEntity originDBObject = repository.findByCategoryName(updateObjectName);
+        if (originDBObject.getStatus() == EntityStatus.DELETED) {
+            repository.delete(originDBObject);
+        } else {
+            throw new CategoryNotFoundException(updateObjectName + " the category with this name already exists");
+        }
+    }
+}

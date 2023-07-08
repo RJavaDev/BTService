@@ -14,31 +14,31 @@ import java.util.Optional;
 
 public class BannerService implements BaseServiceBuilder<BannerEntity> {
 
-    private final BannerRepository bannerRepository;
+    private final BannerRepository repository;
     private final AttachService attachService;
 
 
     @Override
     public boolean addObject(BannerEntity createObject) {
-        Optional<BannerEntity> bannerEntityDB = bannerRepository.findByPosition(createObject.getPosition());
+        Optional<BannerEntity> bannerEntityDB = repository.findByPosition(createObject.getPosition());
         if (bannerEntityDB.isPresent()) {
             BannerEntity banner = bannerEntityDB.get();
             attachService.deleteById(banner.getAttachId());
-            bannerRepository.delete(banner);
-            bannerRepository.save(createObject);
+            repository.delete(banner);
+            repository.save(createObject);
             return true;
         }
-        bannerRepository.save(createObject);
+        repository.save(createObject);
         return true;
     }
 
     @Override
     public BannerEntity getObjectById(Integer id) {
-        return bannerRepository.getBannerId(id);
+        return repository.getBannerId(id);
     }
 
     @Override
     public List<BannerEntity> getAllObject() {
-        return bannerRepository.getAllBannerEntity();
+        return repository.getAllBannerEntity();
     }
 }

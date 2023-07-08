@@ -51,14 +51,17 @@ public class AuthenticationService {
     }
 
     public UserEntity saveUser(UserEntity user) throws UserDataException {
-        AttachEntity attach = getAttach(user.getImageId());
-        Optional<UserEntity> userDB = userRepository.findByUsernameOriginalDB(user.getUsername(), user.getPhoneNumber());
+        List<UserEntity> userDB = userRepository.findByUsernameOriginalDB(user.getUsername(), user.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        if (userDB.isPresent()) {
+        if (!userDB.isEmpty()) {
             userPasswordAndPhoneNumberCheck(userDB, user);
         }
-        user.setAttach(attach);
+        if(user.getAttachId()!=null){
+            AttachEntity attach = getAttach(user.getAttachId());
+            user.setAttach(attach);
+        }
+
         userForCreate(user);
 
         return userRepository.save(user);
@@ -70,16 +73,19 @@ public class AuthenticationService {
         );
     }
 
-    private void userPasswordAndPhoneNumberCheck(Optional<UserEntity> user, UserEntity userDto) {
+    private void userPasswordAndPhoneNumberCheck(List<UserEntity> user, UserEntity userDto) {
 
-        String username = user.get().getUsername();
-        String phoneNumber = user.get().getPhoneNumber();
+        String username = userDto.getUsername();
+        String phoneNumber = userDto.getPhoneNumber();
 
-        if (userDto.getUsername().equals(username))
-            throw new RuntimeException(username + " there is a user with this username");
-        else if (userDto.getPhoneNumber().equals(phoneNumber)) {
-            throw new RuntimeException(phoneNumber + " there is a user with this username");
-        }
+        user.forEach((u)->{
+            if(u.getUsername().equals(username)){
+                throw new RuntimeException(username + " there is a user with this username");
+            }
+            if (u.getPhoneNumber().equals(phoneNumber)){
+                throw new RuntimeException(phoneNumber + " there is a user with this phone number");
+            }
+        });
 
     }
 

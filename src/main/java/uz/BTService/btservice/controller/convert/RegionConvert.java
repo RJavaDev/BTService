@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.RegionDto;
+import uz.BTService.btservice.controller.dto.request.RegionCreateRequestDto;
+import uz.BTService.btservice.controller.dto.request.RegionUpdateRequestDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.RegionEntity;
 
@@ -14,6 +16,20 @@ import java.util.List;
 public class RegionConvert {
     public RegionEntity convertToEntity(RegionDto regionDto){
         return regionDto.toEntity();
+    }
+
+    public RegionEntity convertToEntity(RegionCreateRequestDto regionCreateRequestDto){
+        RegionEntity region = new RegionEntity();
+        region.setName(regionCreateRequestDto.getName());
+        region.setParentId(regionCreateRequestDto.getParentId());
+        return region;
+    }
+
+    public RegionEntity convertToEntity(RegionUpdateRequestDto regionUpdateRequestDto){
+        RegionEntity region = new RegionEntity();
+        region.setName(regionUpdateRequestDto.getName());
+        region.setParentId(regionUpdateRequestDto.getParentId());
+        return region;
     }
 
     public RegionDto from(RegionEntity region){

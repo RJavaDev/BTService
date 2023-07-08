@@ -2,6 +2,7 @@ package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/order-for-product")
 @RequiredArgsConstructor
+@Tag(name = "Product Orders", description = "This controller manages orders for products.")
 public class OrderForProductController {
 
+    private final OrderForProductService service;
 
     @PreAuthorize("permitAll()")
-    @Operation(summary = "This method add order product", description = "This method add")
+    @Operation(summary = "Add Order for Product", description = "This method adds a new order for a product.")
     @PostMapping("/add")
-    public HttpResponse<Object> addOrderForService(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
+    public HttpResponse<Object> addOrderForProduct(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderForProductEntity orderForProduct = OrderForProductConvert.convertToEntity(orderForProductCreateDto);
@@ -36,13 +39,12 @@ public class OrderForProductController {
                 .message(HttpResponse.Status.OK.name());
     }
 
-    private final OrderForProductService service;
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "This method for get ID", description = "This method get by id")
+    @Operation(summary = "Get Order for Product by ID", description = "This method retrieves an order for product based on the provided ID.")
     @GetMapping("/get/{id}")
-    public HttpResponse<Object> getOrderForService(@PathVariable Integer id) {
+    public HttpResponse<Object> getOrderForProduct(@PathVariable Integer id) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
 
@@ -57,9 +59,9 @@ public class OrderForProductController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "This method for get", description = "This method get")
+    @Operation(summary = "Get All Orders for Product", description = "This method retrieves all orders for product.")
     @GetMapping("/get/all")
-    public HttpResponse<Object> getOrderForServiceAll() {
+    public HttpResponse<Object> getOrderForProductAll() {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         List<OrderForProductEntity> orderForProductEntityList = service.getAllObject();
@@ -73,8 +75,8 @@ public class OrderForProductController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "This method for put", description = "This method update order status")
-    @PutMapping("/update/status/{id}")
+    @Operation(summary = "Update Order Status", description = "This method updates the status of an order by the provided ID.")
+    @PatchMapping("/update/status/{id}")
     public HttpResponse<Object> updateOrderStatus(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto, @PathVariable Integer id) {
 
         HttpResponse<Object> response = HttpResponse.build(true);

@@ -2,6 +2,7 @@ package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/order-for-service")
 @RequiredArgsConstructor
+@Tag(name = "Technical Services", description = "This controller manages technical service orders.")
 public class OrderTechnicalServiceController {
 
     private final OrderTechnicalService service;
 
-    @Operation(summary = "This method add order technical service", description = "This method add")
+    @Operation(summary = "Add Order for Technical Service", description = "This method adds a new order for technical service.")
     @PostMapping("/add")
     public HttpResponse<Object> addOrderForService(@RequestBody OrderForServiceCreateDto orderForServiceCreateDto) {
 
@@ -38,7 +40,7 @@ public class OrderTechnicalServiceController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
-    @Operation(summary = "This method for get by id", description = "This method get by id")
+    @Operation(summary = "Get Order for Technical Service by ID", description = "This method retrieves an order for technical service based on the provided ID.")
     @GetMapping("/get/{id}")
     public HttpResponse<Object> getOrderForService(@PathVariable Integer id) {
 
@@ -55,7 +57,7 @@ public class OrderTechnicalServiceController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
-    @Operation(summary = "This method for get all", description = "This method get all order service")
+    @Operation(summary = "Get All Orders for Technical Service", description = "This method retrieves all orders for technical service.")
     @GetMapping("/get/all")
     public HttpResponse<Object> getOrderForServiceAll() {
 
@@ -72,7 +74,7 @@ public class OrderTechnicalServiceController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
-    @Operation(summary = "This method for put", description = "This method update order status")
+    @Operation(summary = "Update Order Status for Technical Service", description = "This method updates the status of an order for technical service by the provided ID.")
     @PutMapping("/update/status/{id}")
     public HttpResponse<Object> updateOrderStatus(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto, @PathVariable Integer id) {
 

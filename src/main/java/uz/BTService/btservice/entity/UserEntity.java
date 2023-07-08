@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
+import uz.BTService.btservice.entity.base.BaseUserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,14 +22,12 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = TableNames.DEPARTMENT_USER)
-public class UserEntity extends BaseServerModifierEntity implements UserDetails {
+public class UserEntity extends BaseUserEntity implements UserDetails {
 
     private String firstname;
     private String lastname;
     private String middleName;
     private Date birtDate;
-
-    private String imageId;
 
     @OneToOne
     private AttachEntity attach;

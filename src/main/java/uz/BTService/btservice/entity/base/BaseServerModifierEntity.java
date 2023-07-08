@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-
 public class BaseServerModifierEntity extends BaseServerEntity{
     @Column(name = "createdDate")
     private LocalDateTime createdDate;

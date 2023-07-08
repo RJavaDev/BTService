@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.RegionEntity;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Optional;
 public interface RegionRepository extends JpaRepository<RegionEntity,Integer> {
 
     @Query(value = "SELECT btsr.* FROM bts_region btsr WHERE btsr.name=:regionName",nativeQuery = true)
-    Optional<RegionEntity> findByCreatedByName(@Param("regionName")String regionName);
+    RegionEntity findByRegionName(@Param("regionName")String regionName);
 
     @Query(value = "SELECT btsr.* FROM bts_region btsr WHERE btsr.id=:regionId AND btsr.status <> 'DELETED'", nativeQuery = true)
     Optional<RegionEntity> findByRegionId(@Param("regionId") Integer regionId);

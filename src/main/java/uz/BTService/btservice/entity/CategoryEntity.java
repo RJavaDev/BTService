@@ -22,6 +22,9 @@ public class CategoryEntity extends BaseForParentAndChild {
     @Enumerated(EnumType.STRING)
     private CategoryType type;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private AttachEntity attach;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentId", referencedColumnName = "id")
     List<CategoryEntity> children = new ArrayList<>();

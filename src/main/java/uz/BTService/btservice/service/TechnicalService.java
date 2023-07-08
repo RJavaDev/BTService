@@ -22,7 +22,7 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public boolean add(TechnicalServiceEntity entity, Integer categoryId){
+    public boolean add(TechnicalServiceEntity entity, Integer categoryId, List<String> list){
         categoryRepository.findByCategoryId(categoryId).orElseThrow(()->{
             throw new CategoryNotFoundException(categoryId+"-id category not found");
         });
@@ -50,6 +50,11 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
     public List<TechnicalServiceEntity> getObjectByCategoryId(Integer categoryId) {
         return  repository.getTechnicalServiceCategoryType(categoryId);
     }
+
+//    @Override
+//    public boolean update(TechnicalServiceEntity updateNewUpdateObject, Integer objectId, Integer categoryId) {
+//        return false;
+//    }
 
     @Override
     @Transactional

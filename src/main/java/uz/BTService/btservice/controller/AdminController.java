@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/admin")
 @RequiredArgsConstructor
-@Tag(name = "Admin Controller", description = "This Controller manages the admins for Super_Admin")
+@Tag(name = "Admin Controller", description = "This Controller manages the administrators for Super Admin")
 public class AdminController {
 
     private final UserService userService;
@@ -32,25 +32,7 @@ public class AdminController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @Operation(summary = "This method for get", description = "To get all users for admin")
-    @GetMapping("/list")
-    public HttpResponse<Object> getAdminList() {
-        HttpResponse<Object> response = HttpResponse.build(true);
-
-        List<UserEntity> adminList = userService.getAdminAll();
-        List<UserDto> userDtoList = UserConvert.fromEntity(adminList);
-
-        response
-                .code(HttpResponse.Status.OK)
-                .body(userDtoList)
-                .message(HttpResponse.Status.OK.name());
-
-        return response;
-    }
-
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @Operation(summary = "This method for post", description = "This method admin add")
+    @Operation(summary = "Add Admin", description = "This method adds an administrator")
     @PostMapping("/add")
     public HttpResponse<Object> add(@RequestBody AdminCreateRequestDto requestDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -72,7 +54,25 @@ public class AdminController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @Operation(summary = "This method for get", description = "This method is used to get how many points the admin user has scored")
+    @Operation(summary = "Get Admin List", description = "This method retrieves the list of administrators")
+    @GetMapping("/list")
+    public HttpResponse<Object> getAdminList() {
+        HttpResponse<Object> response = HttpResponse.build(true);
+
+        List<UserEntity> adminList = userService.getAdminAll();
+        List<UserDto> userDtoList = UserConvert.fromEntity(adminList);
+
+        response
+                .code(HttpResponse.Status.OK)
+                .body(userDtoList)
+                .message(HttpResponse.Status.OK.name());
+
+        return response;
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Operation(summary = "Get Admin Information", description = "This method retrieves the information of an admin by ID")
     @GetMapping("/info/{id}")
     public HttpResponse<Object> getAdminInformation(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(true);
@@ -88,23 +88,7 @@ public class AdminController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "This user for update", description = "This method is designed to delete a user by ID")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> userDelete(@PathVariable Integer id) {
-
-        HttpResponse<Object> response = new HttpResponse<>(true);
-        Boolean userDelete = userService.userDelete(id);
-
-        return response
-                .code(HttpResponse.Status.OK)
-                .body(userDelete)
-                .message(id + "-id admin deleted successfully");
-
-    }
-
-    @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "This get user roles", description = "This method get user role list")
+    @Operation(summary = "Get User Roles", description = "This method retrieves the list of available roles for admins")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping("/get/roles")
     public HttpResponse<Object> getUserRoles() {
@@ -116,6 +100,22 @@ public class AdminController {
                 .code(HttpResponse.Status.OK)
                 .body(roleEnums)
                 .message(HttpResponse.Status.OK.name());
+
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Delete User by ID", description = "This method allows a Super Admin to delete an admin by their ID")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    public HttpResponse<Object> userDelete(@PathVariable Integer id) {
+
+        HttpResponse<Object> response = new HttpResponse<>(true);
+        Boolean userDelete = userService.userDelete(id);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(userDelete)
+                .message(id + "-id admin deleted successfully");
 
     }
 

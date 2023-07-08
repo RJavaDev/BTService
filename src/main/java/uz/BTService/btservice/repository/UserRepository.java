@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> getUserId(@Param("userId") Integer userId);
 
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username OR du.phone_number = :phoneNumber", nativeQuery = true)
-    Optional<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
+    List<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
 
 
     @Query(value =  "SELECT btsu.*,(\n" +
@@ -50,7 +50,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "    btsa.path," +
             " btsa.type\n" +
             "FROM bts_user btsu left join bts_attach btsa on btsu.attach_id = btsa.id\n" +
-            "WHERE btsu.status<>'DELETED'", nativeQuery = true)
+            "WHERE btsu.status<>'DELETED' " +
+            "AND 'USER' = ANY(role_enum_list)", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
@@ -61,7 +62,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Integer userDelete(@Param("userId") Integer userId);
 
 
-    @Query(value = "SELECT * FROM bts_user WHERE 'ADMIN' = ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
+    @Query(value = "SELECT * FROM bts_user WHERE 'SUPER_ADMIN' <> ANY(role_enum_list) AND 'USER' <> ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
     List<UserEntity> getAllAdmin();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND 'ADMIN' = ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)

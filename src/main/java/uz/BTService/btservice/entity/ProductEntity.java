@@ -22,12 +22,11 @@ public class ProductEntity extends BaseServerModifierEntity {
     private String color;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CategoryEntity category;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "attach_id" ,referencedColumnName = "id")
+    @OneToMany(fetch=FetchType.LAZY)
     private List<AttachEntity> attach;
 
     private String description;

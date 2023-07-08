@@ -2,6 +2,7 @@ package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +17,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/message")
+@Tag(name = "Category Management", description = "This controller manages the categories.")
 public class MessageController {
     private final MessageService service;
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
-    @Operation(summary = "This method for get all message", description = "This method get all order service message")
+    @Operation(summary = "Get Orders for Service", description = "This method retrieves the orders related to the service and sends a notification message. Once retrieved, the orders are automatically deleted.")
     @GetMapping("/service")
     public HttpResponse<Object> getOrderForService() {
 
@@ -36,7 +38,7 @@ public class MessageController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "This method for get all order product message", description = "This method get all order product message")
+    @Operation(summary = "Get Orders for Product", description = "This method retrieves the orders related to the product and sends a notification message. Once retrieved, the orders are automatically deleted.")
     @GetMapping("/product")
     public HttpResponse<Object> getOrderForProduct() {
 

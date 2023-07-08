@@ -1,20 +1,15 @@
 package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.ProductConvert;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
-import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForUserDto;
 import uz.BTService.btservice.entity.ProductEntity;
-import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
-import uz.BTService.btservice.exceptions.ProductException;
+import uz.BTService.btservice.repository.AttachRepository;
 import uz.BTService.btservice.service.ProductService;
 
 import java.util.List;
@@ -23,18 +18,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
-@Tag(name = "Product Controller", description = "This Product Controller for super admin")
-public class ProductController extends BaseServerModifierEntity {
+@Tag(name = "Product Controller", description = "This controller provides services for retrieving product open information.")
+public class ProductController{
 
-    private final ProductService productService;
+    private final ProductService service;
+    private final AttachRepository attachRepository;
 
 
-    @Operation(summary = "This method for GetId", description = "This method Product GetId")
+    @Operation(summary = "Get Product by ID", description = "This method retrieves product information based on the provided ID.")
     @GetMapping("/get/{id}")
     public HttpResponse<Object> getProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        ProductEntity responseProduct = productService.getObjectById(id);
+        ProductEntity responseProduct = service.getObjectById(id);
         ProductResponseForUserDto responseForUserDto = ProductConvert.from(responseProduct);
 
         return response
@@ -46,13 +42,13 @@ public class ProductController extends BaseServerModifierEntity {
     }
 
 
-    @Operation(summary = "This method for get", description = "This method get all product")
+    @Operation(summary = "Get All Products", description = "This method retrieves all available products.")
     @GetMapping("/get/all")
     public HttpResponse<Object> getProductAll() {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> productAllList = productService.getAllObject();
+        List<ProductEntity> productAllList = service.getAllObject();
         List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(productAllList);
 
         response
@@ -64,13 +60,13 @@ public class ProductController extends BaseServerModifierEntity {
         return response;
     }
 
-    @Operation(summary = "This method for get", description = "Product get category by id")
+    @Operation(summary = "Get Products by Category ID", description = "This method retrieves products based on the provided category ID.")
     @GetMapping("/get/category/{id}")
     public HttpResponse<Object> getProductByCategoryId(@PathVariable Integer id) {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> responseEntityList = productService.getObjectByCategoryId(id);
+        List<ProductEntity> responseEntityList = service.getObjectByCategoryId(id);
         List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(responseEntityList);
 
         return response
@@ -81,12 +77,12 @@ public class ProductController extends BaseServerModifierEntity {
     }
 
 
-    @Operation(summary = "This method for Get", description = "This method Product Search product name")
+    @Operation(summary = "Search Products by Name", description = "This method searches for products based on the provided product name.")
     @GetMapping("/get/search-product/name/{productName}")
     public HttpResponse<Object> getProductNameSearch(@PathVariable String productName) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> responseEntityList = productService.getProductNameSearch(productName);
+        List<ProductEntity> responseEntityList = service.getProductNameSearch(productName);
         List<ProductResponseForUserDto> responseProductList = ProductConvert.from(responseEntityList);
 
         return response
@@ -98,12 +94,12 @@ public class ProductController extends BaseServerModifierEntity {
     }
 
 
-    @Operation(summary = "This method for Get", description = "This method Product name")
+    @Operation(summary = "Get Product by Name", description = "This method retrieves a product based on the provided product name.")
     @GetMapping("/get/name/{productName}")
     public HttpResponse<Object> getProductName(@PathVariable String productName) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        List<ProductEntity> responseEntityList = productService.getProductName(productName);
+        List<ProductEntity> responseEntityList = service.getProductName(productName);
         List<ProductResponseForUserDto> responseProductList = ProductConvert.from(responseEntityList);
 
         return response
@@ -112,5 +108,15 @@ public class ProductController extends BaseServerModifierEntity {
                 .body(responseProductList)
                 .message(HttpResponse.Status.OK.name());
 
+    }
+
+    @PostMapping ("/get/attachList")
+    public HttpResponse<Object> geta(@RequestBody ProductCreateRequestDto productCreateRequestDto){
+        HttpResponse<Object> response = HttpResponse.build(false);
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(attachRepository.getAttachListByIds(productCreateRequestDto.getAttachId()))
+                .message(HttpResponse.Status.OK.name());
     }
 }

@@ -24,14 +24,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/banner")
 @RequiredArgsConstructor
-@Tag(name = "Banner", description = "This Banner CRUD")
+@Tag(name = "Banner Controller", description = "This controller manages the banners on the website")
 public class BannerController {
 
     private final BannerService bannerService;
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
-    @Operation(summary = "This method for post", description = "This method Product add")
+    @Operation(summary = "Add Banner", description = "This method adds a new banner and updates the banner with the given position, deleting the previous banner.")
     @PostMapping("/add")
     public HttpResponse<Object> addProduct(@RequestBody BannerCreateRequestDto bannerCreateRequestDto) {
 
@@ -44,11 +44,11 @@ public class BannerController {
                 .code(HttpResponse.Status.OK)
                 .success(true)
                 .body(save)
-                .message(HttpResponse.Status.OK.name());
+                .message("Banner added successfully and the previous banner at the given position has been deleted.");
     }
 
 
-    @Operation(summary = "This method for GetId", description = "This method Banner GetId")
+    @Operation(summary = "Get All Banners", description = "This method retrieves all banners sorted by position.")
     @GetMapping("/get/all")
     public HttpResponse<Object> getBannerAll() {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -59,11 +59,11 @@ public class BannerController {
                 .code(HttpResponse.Status.OK)
                 .success(true)
                 .body(bannerResponseDtoList)
-                .message(HttpResponse.Status.OK.name());
+                .message("Successfully retrieved all banners sorted by position.");
 
     }
 
-    @Operation(summary = "This method for GetId", description = "This method Banner GetId")
+    @Operation(summary = "Get Banner by ID", description = "This method retrieves a banner by its ID.")
     @GetMapping("/get/{id}")
     public HttpResponse<Object> getBannerId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);

@@ -11,6 +11,8 @@ import uz.BTService.btservice.controller.convert.RegionConvert;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.RegionDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
+import uz.BTService.btservice.controller.dto.request.RegionCreateRequestDto;
+import uz.BTService.btservice.controller.dto.request.RegionUpdateRequestDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.RegionEntity;
 import uz.BTService.btservice.service.RegionService;
@@ -24,25 +26,22 @@ import java.util.List;
 public class RegionController {
 
     private final RegionService regionService;
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for post", description = "This method Region add")
     @PostMapping("/add")
-    public HttpResponse<Object> addRegion(@RequestBody RegionDto regionDto) {
+    public HttpResponse<Object> addRegion(@RequestBody RegionCreateRequestDto regionDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-             boolean regionSave= regionService.addObject(RegionConvert.convertToEntity(regionDto));
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(regionSave)
-                    .message(HttpResponse.Status.OK.name());
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
-                    .message(e.getMessage());
-        }
-        return response;
+
+        RegionEntity region = RegionConvert.convertToEntity(regionDto);
+        boolean regionSave = regionService.addObject(region);
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(regionSave)
+                .message(HttpResponse.Status.OK.name());
+
     }
 
     @PreAuthorize("permitAll()")
@@ -52,19 +51,13 @@ public class RegionController {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         RegionEntity region = regionService.getObjectByIdTree(id);
-        if (region != null) {response
+        RegionDto fromTree = RegionConvert.fromTree(region);
+        return response
                 .code(HttpResponse.Status.OK)
                 .success(true)
-                .body(RegionConvert.fromTree(region))
+                .body(fromTree)
                 .message(HttpResponse.Status.OK.name());
-        } else {
-            response
-                    .code(HttpResponse.Status.NOT_FOUND)
-                    .success(true)
-                    .message(id + " is region not found!!!");
-        }
 
-        return response;
     }
 
     @PreAuthorize("permitAll()")
@@ -121,16 +114,15 @@ public class RegionController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for Post", description = "This method user update")
-    @PostMapping("/update")
-    public HttpResponse<Object> update(@RequestBody RegionDto regionDto) {
+    @PatchMapping("/update/{id}")
+    public HttpResponse<Object> update(@RequestBody RegionUpdateRequestDto regionDto, @PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
-
-        RegionEntity region = regionService.updateObject(regionDto.toEntity());
-        RegionDto regionDto1 = RegionConvert.fromTree(region);
+        RegionEntity regionEntity = RegionConvert.convertToEntity(regionDto);
+        boolean isUpdate = regionService.updateObject(regionEntity, id);
 
         response.code(HttpResponse.Status.OK)
                 .success(true)
-                .body(regionDto1)
+                .body(isUpdate)
                 .message(HttpResponse.Status.OK.name());
 
         return response;

@@ -1,5 +1,6 @@
 package uz.BTService.btservice.controller.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import uz.BTService.btservice.controller.dto.base.BaseUserDto;
@@ -19,9 +20,11 @@ public class UserCreateRequestDto extends BaseUserDto {
     private String firstname;
 
     @NotBlank(message = "birtDate must not be null!!!")
+    @Schema(name = "birtDate", example = "25-04-2000")
     private String birtDate;
 
     @NotBlank(message = "phoneNumber must not be null!!!")
+    @Schema(name = "phoneNumber", example = "+998901389918")
     private String phoneNumber;
 
     @NotBlank(message = "username must not be null!!!")

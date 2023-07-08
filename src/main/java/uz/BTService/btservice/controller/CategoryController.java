@@ -10,6 +10,8 @@ import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.convert.CategoryConvert;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
+import uz.BTService.btservice.controller.dto.request.CategoryCreateRequestDto;
+import uz.BTService.btservice.controller.dto.request.CategoryUpdateRequestDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.service.CategoryService;
 
@@ -18,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/category")
 @RequiredArgsConstructor
-@Tag(name = "Category", description = "This Category CRUD")
+@Tag(name = "Category Controller", description = "This controller manages the categories.")
 public class CategoryController {
 
     private final CategoryService service;
@@ -26,28 +28,25 @@ public class CategoryController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    @Operation(summary = "This method for post", description = "This method Category add")
+    @Operation(summary = "Add Category", description = "This method adds a new category. If no parentId is provided, the added category will be considered as a parent category.")
     @PostMapping("/add")
-    public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
+    public HttpResponse<Object> addCategory(@RequestBody CategoryCreateRequestDto categoryDto) {
+
         HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            boolean categorySave = service.addObject(CategoryConvert.convertToEntity(categoryDto));
-            response
+
+            CategoryEntity category = CategoryConvert.convertToEntity(categoryDto);
+            boolean categorySave = service.addObject(category);
+            return response
                     .code(HttpResponse.Status.OK)
                     .success(true)
                     .body(categorySave)
                     .message(HttpResponse.Status.OK.name());
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
-                    .message(e.getMessage());
-        }
-        return response;
+
     }
 
 
     @PreAuthorize("permitAll()")
-    @Operation(summary = "This method for getId", description = "This method Category getId")
+    @Operation(summary = "Get Category Tree", description = "This method retrieves the category along with its descendants in a tree structure based on the provided ID.")
     @GetMapping("/get/tree/{id}")
     public HttpResponse<Object> getCategoryIdTree(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -69,7 +68,7 @@ public class CategoryController {
     }
 
     @PreAuthorize("permitAll()")
-    @Operation(summary = "This method for getId", description = "This method Category getId")
+    @Operation(summary = "Get Category by ID", description = "This method retrieves a category based on the provided ID without any tree structure.")
     @GetMapping("/get/{id}")
     public HttpResponse<Object> getCategoryId(@PathVariable Integer id) {
 
@@ -86,7 +85,7 @@ public class CategoryController {
     }
 
     @PreAuthorize("permitAll()")
-    @Operation(summary = "This method for getAll", description = "This method user getAll")
+    @Operation(summary = "Get All Categories", description = "This method retrieves all categories without any tree structure.")
     @GetMapping("/get/all")
     public HttpResponse<Object> getAllCategory() {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -103,36 +102,33 @@ public class CategoryController {
     }
 
     @PreAuthorize("permitAll()")
-    @Operation(summary = "This method for getAll", description = "This method user getAll")
+    @Operation(summary = "Get All Categories with Tree Structure", description = "This method retrieves all categories in a tree structure, starting from the root category and including all its descendants.")
     @GetMapping("/get/all-tree")
     public HttpResponse<Object> getAllTreeCategory() {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         List<CategoryEntity> allCategoryTree = service.getAllObjectTree();
         List<CategoryDto> categoryTreeList = CategoryConvert.fromTree(allCategoryTree);
-        response
+        return response
                 .code(HttpResponse.Status.OK)
                 .success(true)
                 .body(categoryTreeList)
                 .message(HttpResponse.Status.OK.name());
-
-
-        return response;
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    @Operation(summary = "This method for Put", description = "This method user update")
-    @PostMapping("/update")
-    public HttpResponse<Object> update(@RequestBody CategoryDto categoryDto) {
+    @Operation(summary = "Update Category by ID", description = "This method updates a category based on the provided ID.")
+    @PatchMapping("/update/{id}")
+    public HttpResponse<Object> update(@RequestBody CategoryUpdateRequestDto categoryDto, @PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
 
-        CategoryEntity category = service.updateObject(categoryDto.toEntity());
-        CategoryDto categoryResponseDto = CategoryConvert.fromTree(category);
+        CategoryEntity category = CategoryConvert.convertToEntity(categoryDto);
+        boolean isUpdate = service.updateObject(category,id);
 
         response.code(HttpResponse.Status.OK)
                 .success(true)
-                .body(categoryResponseDto)
+                .body(isUpdate)
                 .message(HttpResponse.Status.OK.name());
 
         return response;
@@ -140,7 +136,21 @@ public class CategoryController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    @Operation(summary = "This method for Delete", description = "This method user delete")
+    @Operation(summary = "Get Categories by Type", description = "This method retrieves categories based on the category type.")
+    @GetMapping("/category-type")
+    public HttpResponse<Object> getByCategoryType() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        return response.code(HttpResponse.Status.OK)
+                .success(true)
+                .body(CategoryType.values())
+                .message(HttpResponse.Status.OK.name());
+
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @Operation(summary = "Delete Category by ID", description = "This method deletes a category by its ID. If the category is a parent, its children are automatically deleted.")
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteCategory(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -150,20 +160,6 @@ public class CategoryController {
         return response.code(HttpResponse.Status.OK)
                 .success(true)
                 .body(true)
-                .message(HttpResponse.Status.OK.name());
-
-    }
-
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    @Operation(summary = "This method for Delete", description = "This method user delete")
-    @GetMapping("/category-type")
-    public HttpResponse<Object> getByCategoryType() {
-        HttpResponse<Object> response = HttpResponse.build(false);
-
-        return response.code(HttpResponse.Status.OK)
-                .success(true)
-                .body(CategoryType.values())
                 .message(HttpResponse.Status.OK.name());
 
     }

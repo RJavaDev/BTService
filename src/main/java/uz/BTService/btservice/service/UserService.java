@@ -11,31 +11,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.common.util.SecurityUtils;
-import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.FilterForm;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
     public List<UserInterface> getUserAll() {
-      return userRepository.getAllUserInterface();
+      return repository.getAllUserInterface();
     }
 
 
     public UserEntity getUserInformation(Integer id) {
-        return userRepository.getUserInformation(id);
+        return repository.getUserInformation(id);
     }
 
     @Transactional
@@ -51,7 +48,7 @@ public class UserService {
     @Transactional
     public Boolean updateUserById(UserEntity userUpdate, Integer id) {
 
-        UserEntity userOriginalDB = userRepository.getUserId(id).orElseThrow(() ->
+        UserEntity userOriginalDB = repository.getUserId(id).orElseThrow(() ->
                 new UsernameNotFoundException("user username not found!")
         );
 
@@ -62,18 +59,18 @@ public class UserService {
 
     @Transactional
     public Boolean userDelete(Integer id) {
-        Integer userDeleteIsSuccess = userRepository.userDelete(id);
+        Integer userDeleteIsSuccess = repository.userDelete(id);
         return userDeleteIsSuccess > 0;
     }
 
     public List<UserEntity> getAdminAll() {
 
-       return userRepository.getAllAdmin();
+       return repository.getAllAdmin();
 
     }
 
     public UserEntity getAdminInformation(Integer id) {
-        return userRepository.getAdminById(id);
+        return repository.getAdminById(id);
     }
 
     private void updateUserSave(UserEntity userUpdate, UserEntity userOriginalDB){
@@ -83,7 +80,7 @@ public class UserService {
 
         userOriginalDB.forUpdate(SecurityUtils.getUserId());
 
-        userRepository.save(userOriginalDB);
+        repository.save(userOriginalDB);
     }
 
     private void userVerifyAndSetProperty(UserEntity userUpdate, UserEntity userOriginalDB){

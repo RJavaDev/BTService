@@ -3,9 +3,10 @@ package uz.BTService.btservice.controller.convert;
 import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.controller.dto.CategoryDto;
+import uz.BTService.btservice.controller.dto.request.CategoryCreateRequestDto;
+import uz.BTService.btservice.controller.dto.request.CategoryUpdateRequestDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
@@ -13,6 +14,27 @@ public class CategoryConvert {
 
     public CategoryEntity convertToEntity(CategoryDto categoryDto){
         return categoryDto.toEntity();
+    }
+
+    public CategoryEntity convertToEntity(CategoryCreateRequestDto categoryDto){
+
+        CategoryEntity category = new CategoryEntity();
+
+        category.setName(categoryDto.getName());
+        category.setType(categoryDto.getType());
+        category.setParentId(categoryDto.getParentId());
+        return category;
+    }
+
+
+    public CategoryEntity convertToEntity(CategoryUpdateRequestDto categoryDto){
+
+        CategoryEntity category = new CategoryEntity();
+
+        category.setName(categoryDto.getName());
+        category.setType(categoryDto.getType());
+        category.setParentId(categoryDto.getParentId());
+        return category;
     }
 
     public CategoryDto fromTree(CategoryEntity category){

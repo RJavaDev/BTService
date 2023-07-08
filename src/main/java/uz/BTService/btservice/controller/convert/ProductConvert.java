@@ -2,6 +2,7 @@ package uz.BTService.btservice.controller.convert;
 
 import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.controller.dto.CategoryDto;
+import uz.BTService.btservice.controller.dto.request.ProductUpdateRequestDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
 import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
@@ -22,8 +23,15 @@ public class ProductConvert {
         return product;
     }
 
+    public ProductEntity convertToEntity(ProductUpdateRequestDto productUpdateRequestDto) {
+
+        ProductEntity product = productUpdateRequestDto.toEntity("attach", "attachId", "categoryId", "category");
+        product.setAttach(setProductSetAttachId(productUpdateRequestDto.getAttachId()));
+        return product;
+    }
+
     public ProductResponseForAdminDto fromForAdmin(ProductEntity product){
-        ProductResponseForAdminDto productResponseForAdminDto = product.toDto("attach");
+        ProductResponseForAdminDto productResponseForAdminDto = product.toDto("attach","category");
         List<AttachResponseDto> AttachDto = AttachConvert.from(product.getAttach());
         CategoryDto categoryDto = CategoryConvert.fromNoTree(product.getCategory());
         productResponseForAdminDto.setAttach(AttachDto);
@@ -63,5 +71,4 @@ public class ProductConvert {
         }
         return attachEntities;
     }
-
 }

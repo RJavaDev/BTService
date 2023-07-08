@@ -14,6 +14,7 @@ import uz.BTService.btservice.controller.dto.response.TechnicalServiceResponseDt
 import uz.BTService.btservice.entity.TechnicalServiceEntity;
 import uz.BTService.btservice.service.TechnicalService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,7 +33,7 @@ public class TechnicalServiceController {
         HttpResponse<Object> response = new HttpResponse<>(true);
 
         TechnicalServiceEntity technicalServiceEntity = TechnicalServiceConvert.convertToEntity(technicalServiceCreate);
-        boolean add = service.add(technicalServiceEntity,technicalServiceCreate.getCategoryId());
+        boolean add = service.add(technicalServiceEntity,technicalServiceCreate.getCategoryId(),new ArrayList<>());
 
         return response
                 .message(HttpStatus.OK.name())
