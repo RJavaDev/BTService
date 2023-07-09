@@ -3,6 +3,7 @@ package uz.BTService.btservice.controller.convert;
 import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.entity.UserEntity;
+import uz.BTService.btservice.interfaces.UserInterface;
 
 @UtilityClass
 public class TokenResponseConvert {
@@ -14,5 +15,11 @@ public class TokenResponseConvert {
                 .build();
     }
 
+    public TokenResponseDto from(String token, UserInterface user){
+        return TokenResponseDto.builder()
+                .token(token)
+                .user(UserConvert.from(user))
+                .build();
+    }
 
 }

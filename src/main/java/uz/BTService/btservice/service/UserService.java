@@ -2,6 +2,7 @@ package uz.BTService.btservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import uz.BTService.btservice.controller.dto.dtoUtil.FilterForm;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.UserRepository;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.util.List;
 
@@ -24,6 +26,8 @@ import java.util.List;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
+
+    private final CommonSchemaValidator commonSchemaValidator;
     private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
     public List<UserInterface> getUserAll() {
@@ -31,8 +35,8 @@ public class UserService {
     }
 
 
-    public UserEntity getUserInformation(Integer id) {
-        return repository.getUserInformation(id);
+    public UserInterface getUserInformation(Integer id) {
+        return commonSchemaValidator.validateUser(id);
     }
 
     @Transactional
@@ -63,14 +67,10 @@ public class UserService {
         return userDeleteIsSuccess > 0;
     }
 
-    public List<UserEntity> getAdminAll() {
+    public List<UserInterface> getAdminAll() {
 
        return repository.getAllAdmin();
 
-    }
-
-    public UserEntity getAdminInformation(Integer id) {
-        return repository.getAdminById(id);
     }
 
     private void updateUserSave(UserEntity userUpdate, UserEntity userOriginalDB){
@@ -83,7 +83,7 @@ public class UserService {
         repository.save(userOriginalDB);
     }
 
-    private void userVerifyAndSetProperty(UserEntity userUpdate, UserEntity userOriginalDB){
+    private void userVerifyAndSetProperty(@NotNull UserEntity userUpdate, UserEntity userOriginalDB){
         if (!StringUtils.isEmpty(userUpdate.getFirstname())) userOriginalDB.setFirstname(userUpdate.getFirstname());
         if (!StringUtils.isEmpty(userUpdate.getLastname())) userOriginalDB.setLastname(userUpdate.getLastname());
         if (!StringUtils.isEmpty(userUpdate.getUsername())) userOriginalDB.setUsername(userUpdate.getUsername());

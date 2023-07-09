@@ -85,6 +85,12 @@ public class UserConvert {
         return userInterfaceList.stream().map(UserConvert::from).toList();
     }
 
+    public UserEntity convertToEntity(UserInterface userInterface){
+        UserEntity user = new UserEntity();
+        user.setUsername(userInterface.getUsername());
+        return user;
+    }
+
     private UserEntity userIgnorePropertiesAdd(UserEntity user, String attachId, String birtDate, List<RoleEnum> role) {
 
         try {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.config.token.JwtService;
 import uz.BTService.btservice.controller.convert.TokenResponseConvert;
+import uz.BTService.btservice.controller.convert.UserConvert;
 import uz.BTService.btservice.controller.dto.request.LoginRequestDto;
 import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.entity.AttachEntity;
@@ -17,6 +18,7 @@ import uz.BTService.btservice.exceptions.FileNotFoundException;
 import uz.BTService.btservice.exceptions.UserDataException;
 import uz.BTService.btservice.exceptions.AuthenticationException;
 import uz.BTService.btservice.exceptions.UserUnauthorizedAction;
+import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.AttachRepository;
 import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.validation.CommonSchemaValidator;
@@ -45,8 +47,9 @@ public class AuthenticationService {
 
     public TokenResponseDto authenticate(LoginRequestDto request) {
 
-        UserEntity user = verifyUser(request);
-        String jwt = jwtService.generateToken(user);
+        UserInterface user = verifyUser(request.getUsername(),request.getPassword());
+        UserEntity userEntity = UserConvert.convertToEntity(user);
+        String jwt = jwtService.generateToken(userEntity);
 
         return TokenResponseConvert.from(jwt, user);
     }
@@ -89,18 +92,23 @@ public class AuthenticationService {
         return false;
     }
 
-    private UserEntity verifyUser(LoginRequestDto request) {
-        UserEntity user = repository.findByUsername(request.getUsername()).orElseThrow(() -> {
-            throw new AuthenticationException(request.getUsername() + " username not found!");
-        });
+    private UserInterface verifyUser(String username, String password) {
+//        UserEntity user = repository.findByUsername(request.getUsername()).orElseThrow(() -> {
+//            throw new AuthenticationException(request.getUsername() + " username not found!");
+//        });
+        UserInterface userInterface = repository.getUserByUsername(username).orElseThrow(
+                () -> {
+                    throw new AuthenticationException(username + " username not found!");
+                }
+        );
 
-        verifyPassword(request, user.getPassword());
+        verifyPassword(password, userInterface.getPassword());
 
-        return user;
+        return userInterface;
     }
 
-    private void verifyPassword(LoginRequestDto request, String userPassword) {
-        if (!passwordEncoder.matches(request.getPassword(), userPassword)) {
+    private void verifyPassword(String passwordDto, String userPassword) {
+        if (!passwordEncoder.matches(passwordDto, userPassword)) {
             throw new AuthenticationException("Incorrect password");
         }
     }

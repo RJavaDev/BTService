@@ -49,7 +49,7 @@ public class UserController {
     public HttpResponse<Object> getUserInformation(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(true);
 
-        UserEntity userEntity = userService.getUserInformation(id);
+        UserInterface userEntity = userService.getUserInformation(id);
         UserDto userDto = UserConvert.from(userEntity);
 
         return response

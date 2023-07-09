@@ -3,10 +3,8 @@ package uz.BTService.btservice.validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.BTService.btservice.entity.*;
-import uz.BTService.btservice.exceptions.CategoryNotFoundException;
-import uz.BTService.btservice.exceptions.FileNotFoundException;
-import uz.BTService.btservice.exceptions.ProductNotFoundException;
-import uz.BTService.btservice.exceptions.RecordNotFoundException;
+import uz.BTService.btservice.exceptions.*;
+import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.*;
 
 import java.util.List;
@@ -119,5 +117,12 @@ public class CommonSchemaValidator {
                 }
             });
         }
+    }
+
+    public UserInterface validateUser(Integer userId) {
+        return userRepository.getUserInformation(userId).orElseThrow(() -> {
+                    throw new UsernameNotFoundException(userId + " user id not found!");
+                }
+        );
     }
 }

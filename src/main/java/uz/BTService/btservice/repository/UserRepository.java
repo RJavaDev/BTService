@@ -13,10 +13,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username AND status <> 'DELETED'", nativeQuery = true)
     Optional<UserEntity> findByUsername(@Param("username") String username);
+
+    @Query(value = "SELECT btsu.*, get_region_address(btsu.region_id) AS address, btsa.path, btsa.type " +
+            "FROM bts_user btsu " +
+            "LEFT JOIN bts_attach btsa ON btsu.attach_id = btsa.id " +
+            "WHERE btsu.username = :username AND status <> 'DELETED'", nativeQuery = true)
+    Optional<UserInterface> getUserByUsername(@Param("username") String username);
 
     @Query(value = "SELECT * FROM bts_user du WHERE du.id = :userId AND status <> 'DELETED'", nativeQuery = true)
     Optional<UserEntity> getUserId(@Param("userId") Integer userId);
@@ -32,17 +38,31 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "AND 'USER' = ANY(btsu.role_enum_list)", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
-    @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
-    UserEntity getUserInformation(@Param("userInformationId") Integer id);
+    @Query(value = "SELECT btsu.*, get_region_address(btsu.region_id) AS address, btsa.path, btsa.type " +
+            "FROM bts_user btsu " +
+            "LEFT JOIN bts_attach btsa ON btsu.attach_id = btsa.id " +
+            "WHERE btsu.id = :userId AND status <> 'DELETED' " +
+            "AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
+    Optional<UserInterface> getUserInformation(@Param("userId") Integer userId);
 
     @Modifying
     @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)
     Integer userDelete(@Param("userId") Integer userId);
 
 
-    @Query(value = "SELECT * FROM bts_user WHERE 'SUPER_ADMIN' <> ANY(role_enum_list) AND 'USER' <> ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
-    List<UserEntity> getAllAdmin();
+    @Query(value = "SELECT btsu.*, get_region_address(btsu.region_id) AS address, btsa.path, btsa.type\n" +
+            "            FROM bts_user btsu\n" +
+            "            LEFT JOIN bts_attach btsa ON btsu.attach_id = btsa.id\n" +
+            "            WHERE NOT 'SUPER_ADMIN' = ANY(role_enum_list)\n" +
+            "            AND 'USER' <> ANY(role_enum_list)\n" +
+            "            AND status <> 'DELETED'", nativeQuery = true)
+    List<UserInterface> getAllAdmin();
 
-    @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND 'ADMIN' = ANY(role_enum_list) AND status <> 'DELETED'", nativeQuery = true)
-    UserEntity getAdminById(@Param("adminId") Integer adminId);
+    @Query(value = "SELECT btsu.*, get_region_address(btsu.region_id) AS address, btsa.path, btsa.type\n" +
+            "            FROM bts_user btsu\n" +
+            "            LEFT JOIN bts_attach btsa ON btsu.id = :adminId AND btsu.attach_id = btsa.id\n" +
+            "            WHERE NOT 'SUPER_ADMIN' = ANY(role_enum_list)\n" +
+            "            AND 'USER' <> ANY(role_enum_list)\n" +
+            "            AND status <> 'DELETED'", nativeQuery = true)
+    Optional<UserInterface> getAdminById(@Param("adminId") Integer adminId);
 }
