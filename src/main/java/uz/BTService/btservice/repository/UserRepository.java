@@ -3,6 +3,7 @@ package uz.BTService.btservice.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uz.BTService.btservice.entity.UserEntity;
@@ -24,34 +25,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
 
 
-    @Query(value =  "SELECT btsu.*,(\n" +
-            "    SELECT STRING_AGG(name, ', ')\n" +
-            "               AS address FROM (\n" +
-            "                                   WITH RECURSIVE regon_name AS(\n" +
-            "                                       SELECT\n" +
-            "                                           bts_child.name AS name,\n" +
-            "                                           bts_child.id,\n" +
-            "                                           bts_child.parent_id,\n" +
-            "                                           0 as level\n" +
-            "                                       FROM bts_region bts_child\n" +
-            "                                       WHERE bts_child.id = btsu.region_id\n" +
-            "                                       UNION ALL\n" +
-            "                                       SELECT\n" +
-            "                                           btsr_parent.name AS name,\n" +
-            "                                           btsr_parent.id,\n" +
-            "                                           btsr_parent.parent_id,\n" +
-            "                                           level+1\n" +
-            "                                       FROM bts_region btsr_parent\n" +
-            "                                                INNER JOIN regon_name rn on rn.parent_id = btsr_parent.id\n" +
-            "                                   )\n" +
-            "                                   SELECT regon_name.name FROM regon_name\n" +
-            "                                   ORDER BY regon_name.level DESC )\n" +
-            "                                   AS user_address),\n" +
-            "    btsa.path," +
-            " btsa.type\n" +
-            "FROM bts_user btsu left join bts_attach btsa on btsu.attach_id = btsa.id\n" +
-            "WHERE btsu.status<>'DELETED' " +
-            "AND 'USER' = ANY(role_enum_list)", nativeQuery = true)
+    @Query(value = "SELECT btsu.*, get_region_address(btsu.region_id) AS address, btsa.path, btsa.type " +
+            "FROM bts_user btsu " +
+            "LEFT JOIN bts_attach btsa ON btsu.attach_id = btsa.id " +
+            "WHERE btsu.status <> 'DELETED' " +
+            "AND 'USER' = ANY(btsu.role_enum_list)", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND NOT 'SUPER_ADMIN' = ANY(role_enum_list)", nativeQuery = true)

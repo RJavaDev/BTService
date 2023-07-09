@@ -7,6 +7,7 @@ import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.request.AdminCreateRequestDto;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
+import uz.BTService.btservice.entity.AttachEntity;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.exceptions.UserDataException;
@@ -15,6 +16,7 @@ import uz.BTService.btservice.interfaces.UserInterface;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @UtilityClass
 public class UserConvert {
@@ -46,6 +48,10 @@ public class UserConvert {
     public UserDto from(UserEntity user) {
         UserDto userDto = user.toDto("password", "birtDate");
         userDto.setBirtDate(String.valueOf(DateUtil.format(user.getBirtDate(), DateUtil.PATTERN3)));
+        AttachEntity attach = user.getAttach();
+        if(Objects.nonNull(attach)){
+            userDto.setAttach(AttachConvert.convertToAttachUrlDto(attach.getId(),attach.getPath(), attach.getType()));
+        }
         return userDto;
     }
 

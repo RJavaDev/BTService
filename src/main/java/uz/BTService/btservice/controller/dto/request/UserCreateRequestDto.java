@@ -33,7 +33,7 @@ public class UserCreateRequestDto extends BaseUserDto {
     @NotBlank(message = "password must not be null!!!")
     private String password;
 
-    @NotBlank(message = "region id must not be null!!!")
+//    @NotBlank(message = "region id must not be null!!!")
     private Integer regionId;
 
     private String attachId;
