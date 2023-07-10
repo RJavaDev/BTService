@@ -122,6 +122,51 @@ public class CommonExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(UsernameNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("RecordNotFound")
+                .build();
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(CategoryNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("RecordNotFound")
+                .build();
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(ProductNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("RecordNotFound")
+                .build();
+    }
+
+    @ExceptionHandler(RegionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(RegionNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("RecordNotFound")
+                .build();
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(FileNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("RecordNotFound")
+                .build();
+    }
+
     @ExceptionHandler(AlreadyExistsException.class)
     @ResponseStatus(CONFLICT)
     FieldErrorResponse handle(AlreadyExistsException ex) {
@@ -143,6 +188,15 @@ public class CommonExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(UNAUTHORIZED)
     FieldErrorResponse handle(AuthenticationException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("Authentication")
+                .build();
+    }
+
+    @ExceptionHandler(UserUnauthorizedAction.class)
+    @ResponseStatus(UNAUTHORIZED)
+    FieldErrorResponse handle(UserUnauthorizedAction ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
                 .code("Authentication")

@@ -37,14 +37,6 @@ public class UserConvert {
                 userCreateRequestDto.getRoles());
     }
 
-    public UserEntity convertToEntity(UserDto userDto) {
-        return userIgnorePropertiesAdd(
-                userDto.toEntity("role", "birtDate"),
-                userDto.getAttachId(),
-                userDto.getBirtDate(),
-                userDto.getRoleEnumList());
-    }
-
     public UserDto from(UserEntity user) {
         UserDto userDto = user.toDto("password", "birtDate");
         userDto.setBirtDate(String.valueOf(DateUtil.format(user.getBirtDate(), DateUtil.PATTERN3)));

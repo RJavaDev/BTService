@@ -27,11 +27,7 @@ public class UserDto extends BaseServerModifierDto {
 
     private String username;
 
-    private String password;
-
     private String address;
-
-    private String attachId;
 
     private AttachUrlResponse attach;
 
