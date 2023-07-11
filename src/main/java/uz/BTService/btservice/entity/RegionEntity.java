@@ -1,5 +1,6 @@
 package uz.BTService.btservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.TableNames;
@@ -19,6 +20,7 @@ public class RegionEntity extends BaseForParentAndChild {
     @JoinColumn(name = "parentId", referencedColumnName = "id")
     List<RegionEntity> children = new ArrayList<>();
 
+    @JsonIgnore
     public RegionDto toDto(String... ignoreProperties){
         return toDto(this, new RegionDto(), ignoreProperties);
     }

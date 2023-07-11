@@ -26,17 +26,13 @@ public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnica
     private final CommonSchemaValidator commonSchemaValidator;
 
     @Override
-    public boolean addObject(OrderTechnicalForServiceEntity createObject) {
+    public boolean addObject(OrderTechnicalForServiceEntity createObject, Integer technicalServiceId) {
 
-        commonSchemaValidator.validateServiceId(createObject.getTechnicalServiceId());
-        MessageEntity message = new MessageEntity();
-
-        message.setOrderServiceId(createObject.getTechnicalServiceId());
-        message.setText(MassageText.ORDER_SERVICE_CREATE);
+        createObject.setTechnicalServiceEntity(commonSchemaValidator.validateService(technicalServiceId));
 
         createObject.setOrderStatus(OrderStatus.NEW);
-        repository.save(createObject);
-        massageRepository.save(message);
+        OrderTechnicalForServiceEntity saveOrderService = repository.save(createObject);
+        sendMessage(saveOrderService);
 
         return true;
     }
@@ -61,5 +57,20 @@ public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnica
         repository.save(orderDb);
 
         return true;
+    }
+
+    @Override
+    public List<OrderTechnicalForServiceEntity> getMyOrder() {
+        Integer userId = SecurityUtils.getUserId();
+        return repository.getMyOrder(userId);
+    }
+
+    private void sendMessage(OrderTechnicalForServiceEntity saveOrderService){
+        MessageEntity message = new MessageEntity();
+
+        message.setOrderServiceId(saveOrderService.getId());
+        message.setText(MassageText.ORDER_SERVICE_CREATE);
+
+        massageRepository.save(message);
     }
 }

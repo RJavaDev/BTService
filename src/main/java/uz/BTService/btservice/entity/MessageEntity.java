@@ -20,14 +20,14 @@ public class MessageEntity {
     @Column(name = "order_service_id")
     private Integer orderServiceId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_service_id", insertable = false, updatable = false)
     private OrderTechnicalForServiceEntity orderTechnicalService;
 
     @Column(name = "order_product_id")
     private Integer orderForProductId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_product_id", insertable = false, updatable = false)
     private OrderForProductEntity orderForProductEntity;
 

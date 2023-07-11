@@ -9,8 +9,11 @@ import uz.BTService.btservice.constants.MassageText;
 import uz.BTService.btservice.constants.OrderStatus;
 import uz.BTService.btservice.entity.MessageEntity;
 import uz.BTService.btservice.entity.OrderForProductEntity;
+import uz.BTService.btservice.entity.ProductEntity;
+import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.MassageRepository;
 import uz.BTService.btservice.repository.OrderForProductRepository;
+import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.builder.BaseOrderServiceBuilder;
 import uz.BTService.btservice.validation.CommonSchemaValidator;
 
@@ -28,25 +31,20 @@ public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProd
 
 
     @Override
-    public boolean addObject(OrderForProductEntity createObject) {
+    public boolean addObject(OrderForProductEntity createObject, Integer productId) {
 
-        commonSchemaValidator.validateProductId(createObject.getProductId());
-
-        MessageEntity message = new MessageEntity();
-
-        message.setOrderForProductId(createObject.getProductId());
-        message.setText(MassageText.ORDER_SERVICE_CREATE);
+        createObject.setProduct(commonSchemaValidator.validateProductId(productId));
 
         createObject.setOrderStatus(OrderStatus.NEW);
-        repository.save(createObject);
-        massageRepository.save(message);
+        OrderForProductEntity saveOrderProduct = repository.save(createObject);
+        sendMessage(saveOrderProduct);
 
         return true;
     }
 
     @Override
     public OrderForProductEntity getObjectById(Integer id) {
-        return repository.getOrderForProductById(id);
+        return commonSchemaValidator.validateOrderForProduct(id);
     }
 
     @Override
@@ -57,11 +55,25 @@ public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProd
     @Transactional
     public boolean updateOrderStatus(OrderStatus orderStatus, Integer id) {
 
-        OrderForProductEntity orderForProductEntity = repository.getOrderForProductById(id);
+        OrderForProductEntity orderForProductEntity = commonSchemaValidator.validateOrderForProduct(id);
 
         orderForProductEntity.setOrderStatus(orderStatus);
         orderForProductEntity.forUpdate(SecurityUtils.getUserId());
 
         return true;
+    }
+
+    @Override
+    public List<OrderForProductEntity> getMyOrder() {
+        Integer userId = SecurityUtils.getUserId();
+        return repository.getMyOrder(userId);
+    }
+
+    private void sendMessage(OrderForProductEntity saveOrderProduct) {
+        MessageEntity message = new MessageEntity();
+
+        message.setOrderForProductId(saveOrderProduct.getId());
+        message.setText(MassageText.ORDER_PRODUCT_CREATE);
+        massageRepository.save(message);
     }
 }

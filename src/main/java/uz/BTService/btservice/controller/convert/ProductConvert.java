@@ -49,7 +49,7 @@ public class ProductConvert {
                 .categoryId(product.getCategory().getId())
                 .description(product.getDescription())
                 .color(product.getColor())
-                .attach(AttachConvert.from(product.getAttach()))
+                .attach(AttachConvert.convertToAttachUrlDto(product.getAttach()))
                 .build();
     }
 

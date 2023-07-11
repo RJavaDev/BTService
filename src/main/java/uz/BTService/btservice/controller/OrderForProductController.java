@@ -32,11 +32,27 @@ public class OrderForProductController {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderForProductEntity orderForProduct = OrderForProductConvert.convertToEntity(orderForProductCreateDto);
-        boolean addOrder = service.addObject(orderForProduct);
+        boolean addOrder = service.addObject(orderForProduct, orderForProductCreateDto.getProductId());
 
         return response
                 .code(HttpResponse.Status.OK)
                 .body(addOrder)
+                .message(HttpResponse.Status.OK.name());
+    }
+
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "Get My Order", description = "This method retrieves the order belonging to the authenticated user.")
+    @GetMapping("/my")
+    public HttpResponse<Object> getMyOrder() {
+
+        HttpResponse<Object> response = HttpResponse.build(true);
+
+        List<OrderForProductEntity> orderForProduct = service.getMyOrder();
+        List<OrderForProductResponseDto> orderForProductResponseDto = OrderForProductConvert.from(orderForProduct);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(orderForProductResponseDto)
                 .message(HttpResponse.Status.OK.name());
     }
 
@@ -58,34 +74,34 @@ public class OrderForProductController {
                 .message(HttpResponse.Status.OK.name());
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "Get All Orders for Product", description = "This method retrieves all orders for product.")
-    @GetMapping("/get/all")
-    public HttpResponse<Object> getOrderForProductAll() {
-
-        HttpResponse<Object> response = HttpResponse.build(true);
-        List<OrderForProductEntity> orderForProductEntityList = service.getAllObject();
-        List<OrderForProductResponseDto> orderForProductResponseDtoList = OrderForProductConvert.from(orderForProductEntityList);
-
-        return response
-                .code(HttpResponse.Status.OK)
-                .body(orderForProductResponseDtoList)
-                .message(HttpResponse.Status.OK.name());
-    }
-
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
-    @Operation(summary = "Update Order Status", description = "This method updates the status of an order by the provided ID.")
-    @PatchMapping("/update/status/{id}")
-    public HttpResponse<Object> updateOrderStatus(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto, @PathVariable Integer id) {
-
-        HttpResponse<Object> response = HttpResponse.build(true);
-        boolean updateOrderStatus = service.updateOrderStatus(orderStatusUpdateDto.getOrderStatus(), id);
-
-        return response
-                .code(HttpResponse.Status.OK)
-                .body(updateOrderStatus)
-                .message(HttpResponse.Status.OK.name());
-    }
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+//    @Operation(summary = "Get All Orders for Product", description = "This method retrieves all orders for product.")
+//    @GetMapping("/get/all")
+//    public HttpResponse<Object> getOrderForProductAll() {
+//
+//        HttpResponse<Object> response = HttpResponse.build(true);
+//        List<OrderForProductEntity> orderForProductEntityList = service.getAllObject();
+//        List<OrderForProductResponseDto> orderForProductResponseDtoList = OrderForProductConvert.from(orderForProductEntityList);
+//
+//        return response
+//                .code(HttpResponse.Status.OK)
+//                .body(orderForProductResponseDtoList)
+//                .message(HttpResponse.Status.OK.name());
+//    }
+//
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+//    @Operation(summary = "Update Order Status", description = "This method updates the status of an order by the provided ID.")
+//    @PatchMapping("/update/status/{id}")
+//    public HttpResponse<Object> updateOrderStatus(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto, @PathVariable Integer id) {
+//
+//        HttpResponse<Object> response = HttpResponse.build(true);
+//        boolean updateOrderStatus = service.updateOrderStatus(orderStatusUpdateDto.getOrderStatus(), id);
+//
+//        return response
+//                .code(HttpResponse.Status.OK)
+//                .body(updateOrderStatus)
+//                .message(HttpResponse.Status.OK.name());
+//    }
 }

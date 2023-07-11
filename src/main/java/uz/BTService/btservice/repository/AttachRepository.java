@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AttachRepository extends CrudRepository<AttachEntity, String>, PagingAndSortingRepository<AttachEntity, String> {
 
-    @Query(value = "SELECT btsa.id FROM bts_attach btsa WHERE btsa.id = ANY(ARRAY [:attachIdList])",nativeQuery = true)
+    @Query(value = "SELECT btsa.* FROM bts_attach btsa WHERE btsa.id = ANY(ARRAY [:attachIdList])",nativeQuery = true)
     List<AttachEntity> getAttachListById(@Param("attachIdList") List<String> attachIdList);
 
     @Query(value = "SELECT btsa.id FROM bts_attach btsa WHERE btsa.id IN (:attachIdList)",nativeQuery = true)

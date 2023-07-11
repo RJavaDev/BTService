@@ -1,5 +1,6 @@
 package uz.BTService.btservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.UserDto;
@@ -38,8 +39,8 @@ public class UserEntity extends BaseUserEntity implements UserDetails {
     private String username;
     private String password;
 
-    @ManyToOne
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
     private RegionEntity region;
 
     @Enumerated(EnumType.STRING)
@@ -92,6 +93,7 @@ public class UserEntity extends BaseUserEntity implements UserDetails {
     /************************************************************
      * ******************** CONVERT TO DTO ***********************
      * ***********************************************************/
+    @JsonIgnore
     public UserDto toDto(String... ignoreProperties) {
         return toDto(this, new UserDto(), ignoreProperties);
     }

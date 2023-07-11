@@ -148,7 +148,7 @@ public class CommonExceptionHandler {
     FieldErrorResponse handle(UsernameNotFoundException ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
-                .code("RecordNotFound")
+                .code("User not found")
                 .build();
     }
 
@@ -157,7 +157,7 @@ public class CommonExceptionHandler {
     FieldErrorResponse handle(CategoryNotFoundException ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
-                .code("RecordNotFound")
+                .code("Category not found")
                 .build();
     }
 
@@ -166,7 +166,7 @@ public class CommonExceptionHandler {
     FieldErrorResponse handle(ProductNotFoundException ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
-                .code("RecordNotFound")
+                .code("Product not found")
                 .build();
     }
 
@@ -175,7 +175,7 @@ public class CommonExceptionHandler {
     FieldErrorResponse handle(RegionNotFoundException ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
-                .code("RecordNotFound")
+                .code("Region not found")
                 .build();
     }
 
@@ -184,7 +184,16 @@ public class CommonExceptionHandler {
     FieldErrorResponse handle(FileNotFoundException ex) {
         return FieldErrorResponse.builder()
                 .message(ex.getMessage())
-                .code("RecordNotFound")
+                .code("File not found")
+                .build();
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    FieldErrorResponse handle(OrderNotFoundException ex) {
+        return FieldErrorResponse.builder()
+                .message(ex.getMessage())
+                .code("Order not found")
                 .build();
     }
 

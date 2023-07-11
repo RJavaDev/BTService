@@ -40,6 +40,23 @@ public class OrderTechnicalServiceController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "Get My Order", description = "This method retrieves the order belonging to the authenticated user.")
+    @GetMapping("/my")
+    public HttpResponse<Object> getMyOrder() {
+
+        HttpResponse<Object> response = HttpResponse.build(true);
+
+        List<OrderTechnicalForServiceEntity> serviceEntity = service.getMyOrder();
+        List<OrderForServiceResponseDto> getMyOrderList = OrderForServiceConvert.from(serviceEntity);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(getMyOrderList)
+                .message(HttpResponse.Status.OK.name());
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
     @Operation(summary = "Get Order for Technical Service by ID", description = "This method retrieves an order for technical service based on the provided ID.")
     @GetMapping("/get/{id}")

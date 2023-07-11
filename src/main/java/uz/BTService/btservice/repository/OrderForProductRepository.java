@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import uz.BTService.btservice.entity.OrderForProductEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderForProductRepository extends JpaRepository<OrderForProductEntity, Integer> {
 
@@ -15,7 +16,14 @@ public interface OrderForProductRepository extends JpaRepository<OrderForProduct
 
 
     @Query(value = "SELECT btsofp.* FROM bts_order_for_product btsofp WHERE btsofp.id = :id AND btsofp.status<>'DELETED'", nativeQuery = true)
-    OrderForProductEntity getOrderForProductById(@Param("id") Integer id);
+    Optional<OrderForProductEntity> getOrderForProductById(@Param("id") Integer id);
 
 
+    @Query(value = "SELECT btsofp.*\n" +
+            "       FROM bts_order_for_product btsofp\n" +
+            "       WHERE btsofp.user_id = :userId\n" +
+            "       AND btsofp.status <> 'DELETED'", nativeQuery = true)
+    List<OrderForProductEntity> getMyOrder(@Param("userId")Integer userId);
+
+    List<OrderForProductEntity> findByUserId(Integer user_id);
 }

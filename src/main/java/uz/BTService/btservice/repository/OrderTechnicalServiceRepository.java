@@ -22,4 +22,12 @@ public interface OrderTechnicalServiceRepository extends JpaRepository<OrderTech
     @Modifying
     @Query(value = "UPDATE bts_order_technical_service SET order_status = :orderStatus AND status = 'UPDATE' WHERE id = :orderId", nativeQuery = true)
     void updateOrderStatus(@Param("orderStatus") OrderStatus orderStatus, @Param("orderId") Integer orderId);
+
+
+    @Query(value = "SELECT * FROM bts_order_technical_service btsots\n" +
+            "       INNER JOIN bts_user btsu\n" +
+            "        ON btsots.user_id = btsu.id\n" +
+            "       WHERE btsots.user_id = :userId\n" +
+            "       AND btsots.status <> 'DELETED'", nativeQuery = true)
+    List<OrderTechnicalForServiceEntity> getMyOrder(@Param("userId") Integer userId);
 }

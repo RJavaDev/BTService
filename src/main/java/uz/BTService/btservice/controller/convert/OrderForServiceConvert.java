@@ -17,7 +17,6 @@ public class OrderForServiceConvert {
 
         validateUser(orderTechnicalService,orderForServiceCreateDto);
 
-        orderTechnicalService.setTechnicalServiceId(orderForServiceCreateDto.getTechnicalServiceId());
         orderTechnicalService.setLatitude(orderForServiceCreateDto.getLatitude());
         orderTechnicalService.setLongitude(orderForServiceCreateDto.getLongitude());
         orderTechnicalService.setAddress(orderForServiceCreateDto.getAddress());
@@ -43,7 +42,7 @@ public class OrderForServiceConvert {
         }else{
 
             if(userId!=null){
-                orderTechnicalService.setUserId(userId);
+                orderTechnicalService.setUser(SecurityUtils.getUser());
                 orderTechnicalService.forCreate(userId);
                 orderTechnicalService.forCreate(userId);
             }else{

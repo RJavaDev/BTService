@@ -27,6 +27,8 @@ public class CommonSchemaValidator {
 
     private final TechnicalServiceRepository technicalServiceRepository;
 
+    private final OrderForProductRepository orderForProductRepository;
+
 
     private void throwIdIsEmpty(String attachId) {
         if (attachId.isEmpty()) {
@@ -169,5 +171,11 @@ public class CommonSchemaValidator {
                     throw new ProductNotFoundException(technicalServiceId + "-id not found!");
                 }
         );
+    }
+
+    public OrderForProductEntity validateOrderForProduct(Integer orderId){
+        return orderForProductRepository.getOrderForProductById(orderId).orElseThrow(()->{
+            throw new OrderNotFoundException(orderId+ "-id not found!");
+        });
     }
 }

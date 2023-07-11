@@ -22,7 +22,7 @@ public class ProductResponseForUserDto{
 
     private Integer categoryId;
 
-    private List<AttachResponseDto> attach;
+    private List<AttachUrlResponse> attach;
 
     private String description;
 

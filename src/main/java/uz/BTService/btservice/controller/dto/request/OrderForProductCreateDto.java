@@ -1,6 +1,6 @@
 package uz.BTService.btservice.controller.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import uz.BTService.btservice.controller.dto.base.BaseOrderRequestDto;
@@ -9,7 +9,7 @@ import uz.BTService.btservice.controller.dto.base.BaseOrderRequestDto;
 @Setter
 public class OrderForProductCreateDto extends BaseOrderRequestDto {
 
-    @NotBlank(message = "productId should not be blank")
+    @NotNull(message = "productId should not be blank")
     private Integer productId;
 
 }

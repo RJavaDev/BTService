@@ -44,7 +44,7 @@ public class AttachController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("permitAll()")
-    @Operation(summary = "Upload Image", description = "This method is used to upload an image")
+    @Operation(summary = "Upload Images List", description = "This method is used to upload an images List")
     @PostMapping("/uploads")
     public HttpResponse<Object> uploadAttachList(@RequestParam List<MultipartFile> file){
 

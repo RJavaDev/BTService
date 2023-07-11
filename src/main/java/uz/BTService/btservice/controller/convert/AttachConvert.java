@@ -93,4 +93,7 @@ public class AttachConvert {
 
         return url;
     }
+    public List<AttachUrlResponse> convertToAttachUrlDto(List<AttachEntity> attachList){
+        return attachList.stream().map(AttachConvert::convertToAttachUrlDto).toList();
+    }
 }
