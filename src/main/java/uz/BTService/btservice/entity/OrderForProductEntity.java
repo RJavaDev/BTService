@@ -7,7 +7,6 @@ import uz.BTService.btservice.constants.OrderStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.response.OrderForProductResponseDto;
 import uz.BTService.btservice.entity.base.BaseOrderEntity;
-import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 @Getter
 @Setter

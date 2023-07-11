@@ -9,6 +9,7 @@ import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.repository.TechnicalServiceRepository;
 import uz.BTService.btservice.service.builder.BaseProduct;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.util.List;
 
@@ -21,8 +22,10 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
 
     private final CategoryRepository categoryRepository;
 
+    private final CommonSchemaValidator commonSchemaValidator;
+
     @Override
-    public boolean add(TechnicalServiceEntity entity, Integer categoryId, List<String> list){
+    public boolean addObject(TechnicalServiceEntity entity, Integer categoryId){
         categoryRepository.findByCategoryId(categoryId).orElseThrow(()->{
             throw new CategoryNotFoundException(categoryId+"-id category not found");
         });
@@ -31,14 +34,10 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
         return true;
     }
 
-    @Override
-    public boolean addObject(TechnicalServiceEntity createObject) {
-        return false;
-    }
 
     @Override
     public TechnicalServiceEntity getObjectById(Integer id) {
-        return repository.getByTechnicalId(id);
+        return commonSchemaValidator.validateService(id);
     }
 
     @Override
@@ -50,11 +49,6 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
     public List<TechnicalServiceEntity> getObjectByCategoryId(Integer categoryId) {
         return  repository.getTechnicalServiceCategoryType(categoryId);
     }
-
-//    @Override
-//    public boolean update(TechnicalServiceEntity updateNewUpdateObject, Integer objectId, Integer categoryId) {
-//        return false;
-//    }
 
     @Override
     @Transactional

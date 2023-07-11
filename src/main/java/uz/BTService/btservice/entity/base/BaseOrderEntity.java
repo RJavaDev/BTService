@@ -19,4 +19,7 @@ public class BaseOrderEntity extends BaseServerModifierEntity {
 
     @Column(nullable = false)
     private double longitude;
+
+    @Column(nullable = false)
+    private String address;
 }

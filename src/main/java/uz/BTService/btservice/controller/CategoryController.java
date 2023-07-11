@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.convert.CategoryConvert;
@@ -30,12 +31,13 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Add Category", description = "This method adds a new category. If no parentId is provided, the added category will be considered as a parent category.")
     @PostMapping("/add")
-    public HttpResponse<Object> addCategory(@RequestBody CategoryCreateRequestDto categoryDto) {
+    public HttpResponse<Object> addCategory(@RequestBody @Validated CategoryCreateRequestDto categoryDto) {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
             CategoryEntity category = CategoryConvert.convertToEntity(categoryDto);
-            boolean categorySave = service.addObject(category);
+            boolean categorySave = service.addObject(category,categoryDto.getAttachId());
+
             return response
                     .code(HttpResponse.Status.OK)
                     .success(true)
@@ -49,22 +51,16 @@ public class CategoryController {
     @Operation(summary = "Get Category Tree", description = "This method retrieves the category along with its descendants in a tree structure based on the provided ID.")
     @GetMapping("/get/tree/{id}")
     public HttpResponse<Object> getCategoryIdTree(@PathVariable Integer id) {
-        HttpResponse<Object> response = HttpResponse.build(false);
+        HttpResponse<Object> response = HttpResponse.build(true);
 
         CategoryEntity category = service.getObjectByIdTree(id);
-        if (category != null) {response
+
+         return response
                 .code(HttpResponse.Status.OK)
                 .success(true)
                 .body(category)
                 .message(HttpResponse.Status.OK.name());
-        } else {
-            response
-                    .code(HttpResponse.Status.NOT_FOUND)
-                    .success(true)
-                    .message(id + " is category not found!!!");
-        }
 
-        return response;
     }
 
     @PreAuthorize("permitAll()")
@@ -124,7 +120,7 @@ public class CategoryController {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         CategoryEntity category = CategoryConvert.convertToEntity(categoryDto);
-        boolean isUpdate = service.updateObject(category,id);
+        boolean isUpdate = service.updateObject(category,id, categoryDto.getAttachId());
 
         response.code(HttpResponse.Status.OK)
                 .success(true)

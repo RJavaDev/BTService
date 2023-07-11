@@ -12,6 +12,7 @@ import uz.BTService.btservice.entity.OrderForProductEntity;
 import uz.BTService.btservice.repository.MassageRepository;
 import uz.BTService.btservice.repository.OrderForProductRepository;
 import uz.BTService.btservice.service.builder.BaseOrderServiceBuilder;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.util.List;
 
@@ -21,11 +22,16 @@ public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProd
 
     private final OrderForProductRepository repository;
 
+    private final CommonSchemaValidator commonSchemaValidator;
+
     private final MassageRepository massageRepository;
 
 
     @Override
     public boolean addObject(OrderForProductEntity createObject) {
+
+        commonSchemaValidator.validateProductId(createObject.getProductId());
+
         MessageEntity message = new MessageEntity();
 
         message.setOrderForProductId(createObject.getProductId());

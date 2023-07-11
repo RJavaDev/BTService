@@ -42,7 +42,7 @@ public class UserConvert {
         userDto.setBirtDate(String.valueOf(DateUtil.format(user.getBirtDate(), DateUtil.PATTERN3)));
         AttachEntity attach = user.getAttach();
         if(Objects.nonNull(attach)){
-            userDto.setAttach(AttachConvert.convertToAttachUrlDto(attach.getId(),attach.getPath(), attach.getType()));
+            userDto.setAttach(AttachConvert.convertToAttachUrlDto(attach));
         }
         return userDto;
     }

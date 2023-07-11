@@ -118,7 +118,7 @@ public class RegionController {
     public HttpResponse<Object> update(@RequestBody RegionUpdateRequestDto regionDto, @PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         RegionEntity regionEntity = RegionConvert.convertToEntity(regionDto);
-        boolean isUpdate = regionService.updateObject(regionEntity, id);
+        boolean isUpdate = regionService.updateObject(regionEntity, id, null);
 
         response.code(HttpResponse.Status.OK)
                 .success(true)

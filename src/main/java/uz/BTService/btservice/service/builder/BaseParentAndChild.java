@@ -12,6 +12,6 @@ public abstract class BaseParentAndChild<R> implements BaseServiceBuilder<R> {
 
     public abstract R firstLevelChildrenOfObject();
 
-    public abstract boolean updateObject(R newUpdateObject,Integer objectId);
+    public abstract boolean updateObject(R newUpdateObject,Integer objectId,String attachId);
 
 }

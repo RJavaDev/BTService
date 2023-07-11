@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.OrderForServiceConvert;
 import uz.BTService.btservice.controller.dto.response.OrderForServiceResponseDto;
@@ -26,7 +27,7 @@ public class OrderTechnicalServiceController {
 
     @Operation(summary = "Add Order for Technical Service", description = "This method adds a new order for technical service.")
     @PostMapping("/add")
-    public HttpResponse<Object> addOrderForService(@RequestBody OrderForServiceCreateDto orderForServiceCreateDto) {
+    public HttpResponse<Object> addOrderForService(@RequestBody @Validated OrderForServiceCreateDto orderForServiceCreateDto) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderTechnicalForServiceEntity orderTechnicalService = OrderForServiceConvert.convertToEntity(orderForServiceCreateDto);

@@ -1,6 +1,5 @@
 package uz.BTService.btservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import uz.BTService.btservice.constants.OrderStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.response.OrderForServiceResponseDto;
 import uz.BTService.btservice.entity.base.BaseOrderEntity;
-import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 @Getter
 @Setter

@@ -15,4 +15,6 @@ public class CategoryUpdateRequestDto extends BaseParentAndChildDto {
 
     private CategoryType type;
 
+    private String attachId;
+
 }

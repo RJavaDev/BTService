@@ -7,11 +7,12 @@ import org.springframework.data.repository.query.Param;
 import uz.BTService.btservice.entity.TechnicalServiceEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TechnicalServiceRepository extends JpaRepository<TechnicalServiceEntity, Integer> {
 
     @Query(value = "SELECT btsts.* FROM bts_technical_service btsts WHERE btsts.id=:technicalServiceId AND btsts.status<>'DELETED'",nativeQuery = true)
-    TechnicalServiceEntity getByTechnicalId(@Param("technicalServiceId") Integer technicalServiceId);
+    Optional<TechnicalServiceEntity> getByTechnicalId(@Param("technicalServiceId") Integer technicalServiceId);
 
     @Query(value = "SELECT btsts.* FROM bts_technical_service btsts" +
             " INNER JOIN bts_category btsc ON" +

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.OrderForProductConvert;
 import uz.BTService.btservice.controller.dto.request.OrderForProductCreateDto;
@@ -27,7 +28,7 @@ public class OrderForProductController {
     @PreAuthorize("permitAll()")
     @Operation(summary = "Add Order for Product", description = "This method adds a new order for a product.")
     @PostMapping("/add")
-    public HttpResponse<Object> addOrderForProduct(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
+    public HttpResponse<Object> addOrderForProduct(@RequestBody @Validated OrderForProductCreateDto orderForProductCreateDto) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
         OrderForProductEntity orderForProduct = OrderForProductConvert.convertToEntity(orderForProductCreateDto);

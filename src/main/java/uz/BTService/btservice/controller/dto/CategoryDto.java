@@ -1,9 +1,9 @@
 package uz.BTService.btservice.controller.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
 import uz.BTService.btservice.entity.CategoryEntity;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryDto extends BaseServerModifierDto {
 
-    @NotBlank(message = "name must not be empty")
+
     private String name;
 
     private Integer parentId;
@@ -22,6 +22,8 @@ public class CategoryDto extends BaseServerModifierDto {
     private CategoryType type;
 
     private List<CategoryDto> children;
+
+    private AttachUrlResponse attach;
 
     public CategoryEntity toEntity(String... ignoreProperties) {
         return super.toEntity(this, new CategoryEntity(), ignoreProperties);

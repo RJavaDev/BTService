@@ -2,6 +2,7 @@ package uz.BTService.btservice.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.entity.*;
 import uz.BTService.btservice.exceptions.*;
 import uz.BTService.btservice.interfaces.UserInterface;
@@ -24,6 +25,14 @@ public class CommonSchemaValidator {
 
     private final UserRepository userRepository;
 
+    private final TechnicalServiceRepository technicalServiceRepository;
+
+
+    private void throwIdIsEmpty(String attachId) {
+        if (attachId.isEmpty()) {
+            throw new FileNotFoundException(attachId + " not null!");
+        }
+    }
 
     public CategoryEntity validateCategory(Integer categoryId) {
         return categoryRepository.findByCategoryId(categoryId).orElseThrow(
@@ -122,6 +131,42 @@ public class CommonSchemaValidator {
     public UserInterface validateUser(Integer userId) {
         return userRepository.getUserInformation(userId).orElseThrow(() -> {
                     throw new UsernameNotFoundException(userId + " user id not found!");
+                }
+        );
+    }
+
+    public void categoryStatusCheck(CategoryEntity getByCategoryNameOriginDB, CategoryEntity categoryentity) {
+
+        if (getByCategoryNameOriginDB != null) {
+
+            if (getByCategoryNameOriginDB.getStatus() == EntityStatus.DELETED) {
+                Integer parentIdDTO = categoryentity.getParentId();
+
+                if (parentIdDTO != null) {
+                    categoryRepository.findByCategoryId(parentIdDTO).orElseThrow(() -> {
+                        throw new CategoryNotFoundException(parentIdDTO + " parent id not found!");
+                    });
+                    getByCategoryNameOriginDB.setParentId(categoryentity.getParentId());
+                }
+                categoryentity.setId(getByCategoryNameOriginDB.getId());
+            } else {
+                throw new CategoryNotFoundException(categoryentity.getName() + " such a category exists!");
+            }
+        }
+    }
+
+    public TechnicalServiceEntity validateService(Integer technicalServiceId) {
+        return technicalServiceRepository.getByTechnicalId(technicalServiceId).orElseThrow(
+                () -> {
+                    throw new ProductNotFoundException(technicalServiceId + "-id not found!");
+                }
+        );
+    }
+
+    public void validateServiceId(Integer technicalServiceId) {
+        technicalServiceRepository.getByTechnicalId(technicalServiceId).orElseThrow(
+                () -> {
+                    throw new ProductNotFoundException(technicalServiceId + "-id not found!");
                 }
         );
     }

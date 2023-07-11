@@ -15,29 +15,12 @@ public class OrderForServiceConvert {
     public OrderTechnicalForServiceEntity convertToEntity(OrderForServiceCreateDto orderForServiceCreateDto) {
         OrderTechnicalForServiceEntity orderTechnicalService = new OrderTechnicalForServiceEntity();
 
-        String phoneNumber = orderForServiceCreateDto.getPhoneNumber();
-        if(phoneNumber!=null){
-            orderTechnicalService.setPhoneNumber(phoneNumber);
-            orderTechnicalService.setCustomerFullName(orderTechnicalService.getCustomerFullName());
-        }else{
-            Integer userId = SecurityUtils.getUserId();
-            if(userId!=null){
-                orderTechnicalService.setUserId(userId);
-                orderTechnicalService.forCreate(userId);
-            }else{
-                throw new UsernameNotFoundException("The user needs to register or enter a phone number, but has not entered anything!!!");
-            }
-
-        }
-
-        Integer userId = SecurityUtils.getUserId();
+        validateUser(orderTechnicalService,orderForServiceCreateDto);
 
         orderTechnicalService.setTechnicalServiceId(orderForServiceCreateDto.getTechnicalServiceId());
         orderTechnicalService.setLatitude(orderForServiceCreateDto.getLatitude());
         orderTechnicalService.setLongitude(orderForServiceCreateDto.getLongitude());
-        orderTechnicalService.setUserId(userId);
-
-        orderTechnicalService.forCreate(userId);
+        orderTechnicalService.setAddress(orderForServiceCreateDto.getAddress());
 
         return orderTechnicalService;
     }
@@ -48,5 +31,25 @@ public class OrderForServiceConvert {
 
     public List<OrderForServiceResponseDto> from(List<OrderTechnicalForServiceEntity> orderTechnicalServiceEntities) {
         return orderTechnicalServiceEntities.stream().map(OrderForServiceConvert::from).toList();
+    }
+
+    private void validateUser(OrderTechnicalForServiceEntity orderTechnicalService, OrderForServiceCreateDto orderForServiceCreateDto){
+        Integer userId = SecurityUtils.getUserId();
+        String phoneNumber = orderForServiceCreateDto.getPhoneNumber();
+        if(phoneNumber!=null){
+            orderTechnicalService.setPhoneNumber(phoneNumber);
+            orderTechnicalService.setCustomerFullName(orderTechnicalService.getCustomerFullName());
+            orderTechnicalService.forCreate();
+        }else{
+
+            if(userId!=null){
+                orderTechnicalService.setUserId(userId);
+                orderTechnicalService.forCreate(userId);
+                orderTechnicalService.forCreate(userId);
+            }else{
+                throw new UsernameNotFoundException("The user needs to register or enter a phone number, but has not entered anything!!!");
+            }
+
+        }
     }
 }

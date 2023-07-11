@@ -70,7 +70,7 @@ public class RegionService extends BaseParentAndChild<RegionEntity> {
     }
 
     @Override
-    public boolean updateObject(RegionEntity newUpdateObject, Integer regionId) {
+    public boolean updateObject(RegionEntity newUpdateObject, Integer regionId, String attachId) {
 
         RegionEntity entity = childIdAndParentIdVerify(newUpdateObject,regionId);
 

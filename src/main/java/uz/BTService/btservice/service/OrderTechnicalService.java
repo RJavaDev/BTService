@@ -11,6 +11,7 @@ import uz.BTService.btservice.entity.OrderTechnicalForServiceEntity;
 import uz.BTService.btservice.repository.MassageRepository;
 import uz.BTService.btservice.repository.OrderTechnicalServiceRepository;
 import uz.BTService.btservice.service.builder.BaseOrderServiceBuilder;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.util.List;
 
@@ -19,12 +20,15 @@ import java.util.List;
 public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnicalForServiceEntity> {
 
     private final OrderTechnicalServiceRepository repository;
+
     private final MassageRepository massageRepository;
 
-
+    private final CommonSchemaValidator commonSchemaValidator;
 
     @Override
     public boolean addObject(OrderTechnicalForServiceEntity createObject) {
+
+        commonSchemaValidator.validateServiceId(createObject.getTechnicalServiceId());
         MessageEntity message = new MessageEntity();
 
         message.setOrderServiceId(createObject.getTechnicalServiceId());

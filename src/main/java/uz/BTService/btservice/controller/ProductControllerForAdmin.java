@@ -34,7 +34,7 @@ public class ProductControllerForAdmin {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         ProductEntity product = ProductConvert.convertToEntity(productDto);
-        boolean isSave = service.add(product,productDto.getCategoryId(),productDto.getAttachId());
+        boolean isSave = service.addObject(product,productDto.getCategoryId(),productDto.getAttachId());
 
         return response
                 .code(HttpResponse.Status.OK)

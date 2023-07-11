@@ -2,7 +2,6 @@ package uz.BTService.btservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -83,7 +82,7 @@ public class UserService {
         repository.save(userOriginalDB);
     }
 
-    private void userVerifyAndSetProperty(@NotNull UserEntity userUpdate, UserEntity userOriginalDB){
+    private void userVerifyAndSetProperty(UserEntity userUpdate, UserEntity userOriginalDB){
         if (!StringUtils.isEmpty(userUpdate.getFirstname())) userOriginalDB.setFirstname(userUpdate.getFirstname());
         if (!StringUtils.isEmpty(userUpdate.getLastname())) userOriginalDB.setLastname(userUpdate.getLastname());
         if (!StringUtils.isEmpty(userUpdate.getUsername())) userOriginalDB.setUsername(userUpdate.getUsername());

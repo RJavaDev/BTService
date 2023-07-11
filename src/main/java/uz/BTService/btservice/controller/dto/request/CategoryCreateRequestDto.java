@@ -1,19 +1,25 @@
 package uz.BTService.btservice.controller.dto.request;
 
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.dto.base.BaseParentAndChildDto;
 
-import javax.validation.constraints.NotEmpty;
+
 
 @Getter
 @Setter
 public class CategoryCreateRequestDto extends BaseParentAndChildDto {
 
-    @NotEmpty(message = "category name should not be empty")
+    @NotBlank(message = "category name should not be empty")
     private String name;
 
-    @NotEmpty(message = "category type should not be empty")
+    @NotNull(message = "category type should not be null")
     private CategoryType type;
+
+    @NotBlank(message = "category attachId should not be empty")
+    private String attachId;
 }

@@ -1,11 +1,9 @@
 package uz.BTService.btservice.controller.convert;
 
 import lombok.experimental.UtilityClass;
-import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
 import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
 import uz.BTService.btservice.entity.AttachEntity;
-import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.exceptions.OriginalFileNameNullException;
 
 import java.io.File;
@@ -78,11 +76,20 @@ public class AttachConvert {
         return fileName.substring(lastIndex + 1);
     }
 
-    public static AttachUrlResponse convertToAttachUrlDto(String attachId, String path, String type) {
+    public AttachUrlResponse convertToAttachUrlDto(String attachId, String path, String type) {
 
         AttachUrlResponse url = new AttachUrlResponse();
         url.setId(attachId);
         url.setUrl(ATTACH_PATH + path + "/" + attachId + "." + type);
+
+        return url;
+    }
+
+    public AttachUrlResponse convertToAttachUrlDto(AttachEntity attach) {
+
+        AttachUrlResponse url = new AttachUrlResponse();
+        url.setId(attach.getId());
+        url.setUrl(ATTACH_PATH + attach.getPath() + "/" + attach.getId() + "." + attach.getType());
 
         return url;
     }

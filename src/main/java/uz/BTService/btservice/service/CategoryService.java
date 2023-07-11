@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.constants.EntityStatus;
+import uz.BTService.btservice.entity.AttachEntity;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.service.builder.BaseParentAndChild;
+import uz.BTService.btservice.validation.CommonSchemaValidator;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,19 +19,21 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class CategoryService extends BaseParentAndChild<CategoryEntity> {
+
     private final CategoryRepository repository;
 
+    private final CommonSchemaValidator commonSchemaValidator;
+
     @Override
-    public boolean addObject(CategoryEntity category) {
+    public boolean addObject(CategoryEntity category, String attachId) {
         Integer userId = SecurityUtils.getUserId();
 
-        CategoryEntity byCreatedByName = repository.findByCategoryName(category.getName());
+        CategoryEntity getByCategoryNameOriginDB = repository.findByCategoryName(category.getName());
 
-        if (byCreatedByName != null) {
-            categoryStatusCheckAndSave(byCreatedByName, category, userId);
-            return true;
-        }
+        commonSchemaValidator.categoryStatusCheck(getByCategoryNameOriginDB, category);
+        AttachEntity attach = commonSchemaValidator.validateAttachId(attachId);
 
+        category.setAttach(attach);
         category.forCreate(userId);
 
         repository.save(category);
@@ -73,7 +77,7 @@ public class CategoryService extends BaseParentAndChild<CategoryEntity> {
     }
 
     @Override
-    public boolean updateObject(CategoryEntity newUpdateObject, Integer categoryId) {
+    public boolean updateObject(CategoryEntity newUpdateObject, Integer categoryId, String attachId) {
         CategoryEntity entity = childIdAndParentIdVerify(newUpdateObject, categoryId);
         entity.setParentId(newUpdateObject.getParentId());
 
@@ -82,6 +86,9 @@ public class CategoryService extends BaseParentAndChild<CategoryEntity> {
             deletedObjectOriginDataBase(updateObjectName);
             entity.setName(updateObjectName);
         }
+
+        AttachEntity attach = commonSchemaValidator.validateAttachId(attachId);
+        entity.setAttach(attach);
 
         entity.forUpdate(SecurityUtils.getUserId());
         repository.save(entity);
@@ -97,26 +104,7 @@ public class CategoryService extends BaseParentAndChild<CategoryEntity> {
         repository.categoryDelete(id);
     }
 
-    private void categoryStatusCheckAndSave(CategoryEntity byCreatedByName, CategoryEntity categoryentity, Integer userId) {
 
-        if (byCreatedByName.getStatus() == EntityStatus.DELETED) {
-
-            byCreatedByName.setName(categoryentity.getName());
-            Integer parentIdDTO = categoryentity.getParentId();
-            if (parentIdDTO != null) {
-                repository.findByCategoryId(parentIdDTO).orElseThrow(() -> {
-                    throw new CategoryNotFoundException(parentIdDTO + " parent id not found!");
-                });
-                byCreatedByName.setParentId(categoryentity.getParentId());
-            }
-
-            byCreatedByName.setStatus(EntityStatus.CREATED);
-            byCreatedByName.forCreate(userId);
-            repository.save(byCreatedByName);
-        } else {
-            throw new CategoryNotFoundException(categoryentity.getName() + " such a category exists!");
-        }
-    }
 
     private CategoryEntity childIdAndParentIdVerify(CategoryEntity category, Integer categoryId) {
 

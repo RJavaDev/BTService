@@ -1,14 +1,11 @@
 package uz.BTService.btservice.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import uz.BTService.btservice.controller.dto.base.BaseUserDto;
 import uz.BTService.btservice.entity.UserEntity;
-import uz.BTService.btservice.entity.role.PermissionEnum;
-import uz.BTService.btservice.entity.role.RoleEnum;
 
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter

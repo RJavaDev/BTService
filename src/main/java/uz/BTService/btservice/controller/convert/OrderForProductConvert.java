@@ -34,6 +34,7 @@ public class OrderForProductConvert {
         orderForProduct.setProductId(orderForProductCreateDto.getProductId());
         orderForProduct.setLatitude(orderForProductCreateDto.getLatitude());
         orderForProduct.setLongitude(orderForProductCreateDto.getLongitude());
+        orderForProduct.setAddress(orderForProductCreateDto.getAddress());
 
         return orderForProduct;
     }

@@ -34,22 +34,17 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProductService extends BaseProduct<ProductEntity> {
 
-
     private final ProductRepository repository;
 
-    private final CategoryRepository categoryRepository;
-
-    private final AttachRepository attachRepository;
     private final CommonSchemaValidator commonSchemaValidator;
 
     public DataGrid<ProductEntity> productPage(HttpServletRequest request, FilterForm filterForm) throws Exception {
         DataGrid<ProductEntity> dataGrid = new DataGrid<>();
         dataGrid.setRows(getAllObject());
-        return dataGrid;
-    }
+        return dataGrid;}
 
     @Override
-    public boolean add(ProductEntity crateNewObject, Integer categoryId, List<String> attachIdList) {
+    public boolean addObject(ProductEntity crateNewObject, Integer categoryId, List<String> attachIdList) {
 
         CategoryEntity categoryIdDb = commonSchemaValidator.validateCategory(categoryId);
 
@@ -60,13 +55,7 @@ public class ProductService extends BaseProduct<ProductEntity> {
         crateNewObject.forCreate(SecurityUtils.getUserId());
 
         repository.save(crateNewObject);
-
         return true;
-    }
-
-    @Override
-    public boolean addObject(ProductEntity createObject) {
-        return false;
     }
 
     @Override
