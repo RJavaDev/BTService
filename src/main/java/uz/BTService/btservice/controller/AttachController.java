@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/attach")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class AttachController {
     private final AttachService service;
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','CONTEND_MANAGER','SUPER_ADMIN')")
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Upload Image", description = "This method is used to upload an image")
     @PostMapping("/upload")
     public HttpResponse<Object> upload(@RequestParam MultipartFile file){
@@ -39,6 +41,23 @@ public class AttachController {
                 .body(attach);
 
     }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "Upload Image", description = "This method is used to upload an image")
+    @PostMapping("/uploads")
+    public HttpResponse<Object> uploadAttachList(@RequestParam List<MultipartFile> file){
+
+        HttpResponse<Object> response = new HttpResponse<>(true);
+        List<AttachResponseDto> attachDtoList = AttachConvert.from(service.saveAttach(file));
+        return response
+                .code(HttpResponse.Status.OK)
+                .message(HttpStatus.OK.name())
+                .body(attachDtoList);
+
+    }
+
+
 
     @Operation(summary = "Download Image", description = "This method is used to download an image")
     @GetMapping("/download/{fineName}")

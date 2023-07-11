@@ -46,6 +46,14 @@ public class AttachService {
 
     }
 
+    public List<AttachEntity> saveAttach(List<MultipartFile> multipartFiles){
+        List<AttachEntity> attachList = new ArrayList<>();
+        for (MultipartFile attach: multipartFiles) {
+            attachList.add(saveAttach(attach));
+        }
+        return attachList;
+    }
+
     public AttachDownloadDTO download(String fileName) {
         try {
             AttachEntity entity = getAttach(fileName);
