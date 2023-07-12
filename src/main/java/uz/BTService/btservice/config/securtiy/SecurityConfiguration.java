@@ -34,7 +34,7 @@ public class SecurityConfiguration {
             "/api/v1/attach/download/**",
             "/api/v1/region/get/**",
             "/api/v1/order-for-product/add",
-            "/api/v1/order-for-service",
+            "/api/v1/order-for-service/add",
             "/images/**"
     };
 

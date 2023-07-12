@@ -25,7 +25,10 @@ public class OrderForServiceConvert {
     }
 
     public OrderForServiceResponseDto from(OrderTechnicalForServiceEntity orderTechnicalService) {
-        return orderTechnicalService.toDto();
+        OrderForServiceResponseDto orderForServiceResponseDto = orderTechnicalService.toDto("technicalServiceEntity","technicalServiceResponseDto", "user");
+        orderForServiceResponseDto.setUser(UserConvert.from(orderTechnicalService.getUser()));
+        orderForServiceResponseDto.setTechnicalServiceResponseDto(TechnicalServiceConvert.from(orderTechnicalService.getTechnicalServiceEntity()));
+        return orderForServiceResponseDto;
     }
 
     public List<OrderForServiceResponseDto> from(List<OrderTechnicalForServiceEntity> orderTechnicalServiceEntities) {
@@ -33,7 +36,7 @@ public class OrderForServiceConvert {
     }
 
     private void validateUser(OrderTechnicalForServiceEntity orderTechnicalService, OrderForServiceCreateDto orderForServiceCreateDto){
-        Integer userId = SecurityUtils.getUserId();
+
         String phoneNumber = orderForServiceCreateDto.getPhoneNumber();
         if(phoneNumber!=null){
             orderTechnicalService.setPhoneNumber(phoneNumber);
@@ -41,9 +44,9 @@ public class OrderForServiceConvert {
             orderTechnicalService.forCreate();
         }else{
 
+            Integer userId = SecurityUtils.getUserId();
             if(userId!=null){
-                orderTechnicalService.setUser(SecurityUtils.getUser());
-                orderTechnicalService.forCreate(userId);
+                orderTechnicalService.setUserId(userId);
                 orderTechnicalService.forCreate(userId);
             }else{
                 throw new UsernameNotFoundException("The user needs to register or enter a phone number, but has not entered anything!!!");

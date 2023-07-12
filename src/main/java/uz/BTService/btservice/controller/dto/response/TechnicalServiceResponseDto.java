@@ -16,8 +16,8 @@ public class TechnicalServiceResponseDto extends BaseServerModifierDto {
 
     private String description;
 
-    private AttachResponseDto attachResponse;
+    private AttachUrlResponse attachResponse;
 
-    private CategoryDto category;
+    private CategoryResponseDto category;
 
 }

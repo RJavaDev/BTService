@@ -30,7 +30,7 @@ public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnica
 
         createObject.setTechnicalServiceEntity(commonSchemaValidator.validateService(technicalServiceId));
 
-        createObject.setOrderStatus(OrderStatus.NEW);
+//        createObject.setOrderStatus(OrderStatus.NEW);
         OrderTechnicalForServiceEntity saveOrderService = repository.save(createObject);
         sendMessage(saveOrderService);
 

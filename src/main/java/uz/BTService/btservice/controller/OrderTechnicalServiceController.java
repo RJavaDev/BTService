@@ -30,8 +30,9 @@ public class OrderTechnicalServiceController {
     public HttpResponse<Object> addOrderForService(@RequestBody @Validated OrderForServiceCreateDto orderForServiceCreateDto) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
+
         OrderTechnicalForServiceEntity orderTechnicalService = OrderForServiceConvert.convertToEntity(orderForServiceCreateDto);
-        boolean addOrder = service.addObject(orderTechnicalService);
+        boolean addOrder = service.addObject(orderTechnicalService, orderForServiceCreateDto.getTechnicalServiceId());
 
         return response
                 .code(HttpResponse.Status.OK)

@@ -18,6 +18,8 @@ public class OrderForProductEntity extends BaseOrderEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProductEntity product;
+
+    @Column(name = "order_status", length = 32, columnDefinition = "varchar(32) default 'NEW'")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 

@@ -21,8 +21,8 @@ public class TechnicalServiceConvert {
     public TechnicalServiceResponseDto from(TechnicalServiceEntity technicalServiceEntity){
 
         TechnicalServiceResponseDto technicalServiceResponseDto = technicalServiceEntity.toDto("category", "attach");
-        technicalServiceResponseDto.setAttachResponse(AttachConvert.from(technicalServiceEntity.getAttach()));
-        technicalServiceResponseDto.setCategory(CategoryConvert.fromNoTree(technicalServiceEntity.getCategory()));
+        technicalServiceResponseDto.setAttachResponse(AttachConvert.convertToAttachUrlDto(technicalServiceEntity.getAttach()));
+        technicalServiceResponseDto.setCategory(CategoryConvert.fromOpenData(technicalServiceEntity.getCategory()));
 
         return technicalServiceResponseDto;
 
