@@ -27,6 +27,7 @@ public class TechnicalServiceEntity extends BaseServerModifierEntity {
 
     @ManyToOne
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @Column(nullable = false)
     private CategoryEntity category;
 
     public TechnicalServiceResponseDto toDto(String... ignoreProperties){

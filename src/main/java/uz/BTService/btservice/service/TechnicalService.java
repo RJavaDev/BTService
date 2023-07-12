@@ -20,15 +20,11 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
 
     private final TechnicalServiceRepository repository;
 
-    private final CategoryRepository categoryRepository;
-
     private final CommonSchemaValidator commonSchemaValidator;
 
     @Override
     public boolean addObject(TechnicalServiceEntity entity, Integer categoryId){
-        categoryRepository.findByCategoryId(categoryId).orElseThrow(()->{
-            throw new CategoryNotFoundException(categoryId+"-id category not found");
-        });
+        entity.setCategory(commonSchemaValidator.validateCategory(categoryId));
         entity.forCreate(SecurityUtils.getUserId());
         repository.save(entity);
         return true;

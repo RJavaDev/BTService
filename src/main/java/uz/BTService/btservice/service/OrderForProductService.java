@@ -35,7 +35,6 @@ public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProd
 
         createObject.setProduct(commonSchemaValidator.validateProductId(productId));
 
-        createObject.setOrderStatus(OrderStatus.NEW);
         OrderForProductEntity saveOrderProduct = repository.save(createObject);
         sendMessage(saveOrderProduct);
 
