@@ -13,6 +13,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TechnicalServiceCreate {
+
+    @NotBlank(message = "name must not be null!!!")
+    private String name;
+
     @NotBlank(message = "description must not be null!!!")
     private String description;
 

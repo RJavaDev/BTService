@@ -9,11 +9,8 @@ import uz.BTService.btservice.constants.MassageText;
 import uz.BTService.btservice.constants.OrderStatus;
 import uz.BTService.btservice.entity.MessageEntity;
 import uz.BTService.btservice.entity.OrderForProductEntity;
-import uz.BTService.btservice.entity.ProductEntity;
-import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.MassageRepository;
 import uz.BTService.btservice.repository.OrderForProductRepository;
-import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.builder.BaseOrderServiceBuilder;
 import uz.BTService.btservice.validation.CommonSchemaValidator;
 
@@ -70,9 +67,12 @@ public class OrderForProductService extends BaseOrderServiceBuilder<OrderForProd
 
     private void sendMessage(OrderForProductEntity saveOrderProduct) {
         MessageEntity message = new MessageEntity();
-
+        String productName = saveOrderProduct.getProduct().getName();
         message.setOrderForProductId(saveOrderProduct.getId());
-        message.setText(MassageText.ORDER_PRODUCT_CREATE);
+        message.setText_en(productName + MassageText.NEW_ORDER_PRODUCT_EN);
+        message.setText_ru(productName + MassageText.NEW_ORDER_PRODUCT_RU);
+        message.setText_uz(productName + MassageText.NEW_ORDER_PRODUCT_UZ);
+        message.setText_ki(productName + MassageText.NEW_ORDER_PRODUCT_KI);
         massageRepository.save(message);
     }
 }

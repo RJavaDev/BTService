@@ -15,20 +15,12 @@ public class MessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String text;
+    private String text_en, text_ru, text_uz, text_ki;
 
     @Column(name = "order_service_id")
     private Integer orderServiceId;
 
-    @OneToOne
-    @JoinColumn(name = "order_service_id", insertable = false, updatable = false)
-    private OrderTechnicalForServiceEntity orderTechnicalService;
-
     @Column(name = "order_product_id")
     private Integer orderForProductId;
-
-    @OneToOne
-    @JoinColumn(name = "order_product_id", insertable = false, updatable = false)
-    private OrderForProductEntity orderForProductEntity;
 
 }

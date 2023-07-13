@@ -15,22 +15,20 @@ import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 @Table(name = TableNames.TECHNICAL_SERVICE)
 public class TechnicalServiceEntity extends BaseServerModifierEntity {
 
-    @Column(columnDefinition="TEXT")
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "attach_id")
-    private String attachId;
-
-    @ManyToOne
-    @JoinColumn(name = "attach_id", insertable=false, updatable=false)
+    @OneToOne
     private AttachEntity attach;
 
     @ManyToOne
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @Column(nullable = false)
     private CategoryEntity category;
 
-    public TechnicalServiceResponseDto toDto(String... ignoreProperties){
+    public TechnicalServiceResponseDto toDto(String... ignoreProperties) {
         return toDto(this, new TechnicalServiceResponseDto(), ignoreProperties);
     }
 }

@@ -13,7 +13,6 @@ public class TechnicalServiceConvert {
 
     public TechnicalServiceEntity convertToEntity(TechnicalServiceCreate technicalServiceCreate){
         TechnicalServiceEntity technicalServiceEntity = new TechnicalServiceEntity();
-        technicalServiceEntity.setAttachId(technicalServiceCreate.getAttachId());
         technicalServiceEntity.setDescription(technicalServiceCreate.getDescription());
         return technicalServiceEntity;
     }

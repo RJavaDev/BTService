@@ -23,8 +23,9 @@ public class TechnicalService extends BaseProduct<TechnicalServiceEntity> {
     private final CommonSchemaValidator commonSchemaValidator;
 
     @Override
-    public boolean addObject(TechnicalServiceEntity entity, Integer categoryId){
+    public boolean addObject(TechnicalServiceEntity entity, Integer categoryId, String attachId){
         entity.setCategory(commonSchemaValidator.validateCategory(categoryId));
+        entity.setAttach(commonSchemaValidator.validateAttachId(attachId));
         entity.forCreate(SecurityUtils.getUserId());
         repository.save(entity);
         return true;

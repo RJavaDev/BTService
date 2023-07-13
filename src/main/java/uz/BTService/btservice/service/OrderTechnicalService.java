@@ -64,11 +64,15 @@ public class OrderTechnicalService extends BaseOrderServiceBuilder<OrderTechnica
         return repository.getMyOrder(userId);
     }
 
-    private void sendMessage(OrderTechnicalForServiceEntity saveOrderService){
+    private void sendMessage(OrderTechnicalForServiceEntity saveOrderService) {
         MessageEntity message = new MessageEntity();
 
+        String technicalName = saveOrderService.getTechnicalServiceEntity().getName();
         message.setOrderServiceId(saveOrderService.getId());
-        message.setText(MassageText.ORDER_SERVICE_CREATE);
+        message.setText_en(technicalName + MassageText.NEW_ORDER_SERVICE_EN);
+        message.setText_ru(technicalName + MassageText.NEW_ORDER_SERVICE_RU);
+        message.setText_uz(technicalName + MassageText.NEW_ORDER_SERVICE_UZ);
+        message.setText_ki(technicalName + MassageText.NEW_ORDER_SERVICE_KI);
 
         massageRepository.save(message);
     }

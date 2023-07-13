@@ -33,7 +33,7 @@ public class TechnicalServiceController {
         HttpResponse<Object> response = new HttpResponse<>(true);
 
         TechnicalServiceEntity technicalServiceEntity = TechnicalServiceConvert.convertToEntity(technicalServiceCreate);
-        boolean add = service.addObject(technicalServiceEntity,technicalServiceCreate.getCategoryId());
+        boolean add = service.addObject(technicalServiceEntity,technicalServiceCreate.getCategoryId(), technicalServiceCreate.getAttachId());
 
         return response
                 .message(HttpStatus.OK.name())

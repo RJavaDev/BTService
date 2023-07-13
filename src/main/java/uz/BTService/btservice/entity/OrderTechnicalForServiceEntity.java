@@ -17,9 +17,9 @@ import uz.BTService.btservice.entity.base.BaseOrderEntity;
 public class OrderTechnicalForServiceEntity extends BaseOrderEntity {
 
 
-    @Column(name = "order_status", nullable = false, length = 32, columnDefinition = "varchar(32) default 'NEW'")
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    @Column(name = "order_status", length = 32, columnDefinition = "varchar(32) default 'NEW'")
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus = OrderStatus.NEW;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
